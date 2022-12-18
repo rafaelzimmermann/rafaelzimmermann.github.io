@@ -3,7 +3,7 @@ plugins:
   - jekyll-sitemap
 
 sass:
-  sass_dir: rafaelzimmermann/_sass/
+  sass_dir: _sass/
 
 title: "Rafael Zimmermann"
 tagline: "An awesome tagline"
@@ -11,5 +11,4 @@ email: "softwareengineerl@chess.mozmail.com"
 description: >- # this means to ignore newlines until "baseurl:"
 author: Rafael Zimmermann
 url: "https://rafaelzimmermann.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
-basedir: "rafaelzimmermann"
-source: "rafaelzimmermann"
+basedir: ""
