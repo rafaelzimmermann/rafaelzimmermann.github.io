@@ -1,0 +1,16 @@
+services:
+  resume-website:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:80"
+      - "3443:443"
+    volumes:
+      # Mount files for live reload during development
+      - ./index.html:/usr/share/nginx/html/index.html
+      - ./style.css:/usr/share/nginx/html/style.css
+      - ./script.js:/usr/share/nginx/html/script.js
+      - ./assets:/usr/share/nginx/html/assets
+    container_name: rafael-resume
+    restart: unless-stopped

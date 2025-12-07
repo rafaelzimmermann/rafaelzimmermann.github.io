@@ -1,18 +1,553 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rafael Zimmermann - Senior Software Engineer at Shopify. Expert in Java, Python, Go, Kubernetes, and cloud technologies.">
+    <meta name="keywords" content="Software Engineer, Java, Python, Go, Kubernetes, Cloud, Backend Developer">
+    <meta name="author" content="Rafael Zimmermann">
 
-<div class="card mb-3" style="max-width: 540px;">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="https://github.com/{{site.data.index.github.handle}}.png" class="img-fluid rounded-start" alt="...">
+    <!-- Open Graph / Social Media Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Rafael Zimmermann - Senior Software Engineer">
+    <meta property="og:description" content="Software developer specialized in Java, Python, Go, Kubernetes, GCP, and AWS">
+    <meta property="og:url" content="https://rafaelzimmermann.github.io">
+    <meta property="og:image" content="https://rafaelzimmermann.github.io/assets/images/rafael-banner.jpg">
+
+    <title>Rafael Zimmermann - Senior Software Engineer</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-header">
+            <a href="#header" class="nav-logo"></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#experience" class="nav-link">Experience</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#education" class="nav-link">Education</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:linkedin@chess.mozmail.com" class="nav-social" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header Section -->
+        <header id="header" class="section">
+            <div class="header-overlay">
+                <div class="container">
+                    <div class="header-content">
+                        <h1 class="name">Rafael Zimmermann</h1>
+                        <p class="title">Senior Software Engineer at Shopify</p>
+                        <p class="location"><i class="fas fa-map-marker-alt"></i> Valencia, Spain</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <p class="about-text">
+                    Experienced software developer passionate about new technologies and innovative systems.
+                    Proven track record with Java, Python, and Go across multiple leading technology companies.
+                    Specializing in building scalable backend systems, microservices architecture, and
+                    cloud-native applications.
+                </p>
+                <div class="specialties">
+                    <h3>Core Specialties</h3>
+                    <div class="specialty-tags">
+                        <span class="tag">Java</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">Go</span>
+                        <span class="tag">Linux</span>
+                        <span class="tag">Redis</span>
+                        <span class="tag">Kubernetes</span>
+                        <span class="tag">GCP</span>
+                        <span class="tag">AWS</span>
+                        <span class="tag">Apache Kafka</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+        <div class="container">
+            <h2 class="section-title">Work Experience</h2>
+
+            <div class="timeline">
+                <!-- Shopify -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="shopify"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Senior Software Developer</h3>
+                            <span class="company">Shopify</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Feb 2022 - Present</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Remote (Valencia, Spain)</span>
+                        </div>
+                        <p class="description">
+                            Working on the Measurement team developing high-performance streaming data pipelines for marketing attribution. Building and maintaining Flink pipelines that process merchant marketing data in near real-time, enabling data-driven advertising decisions.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Apache Flink</span>
+                            <span class="tech-tag">Kafka</span>
+                            <span class="tech-tag">Scala</span>
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Ruby (Rails)</span>
+                            <span class="tech-tag">Data Pipelines</span>
+                            <span class="tech-tag">Real-time Processing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- trivago - Senior Software Engineer -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="trivago"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Senior Software Engineer - Search Core</h3>
+                            <span class="company">trivago</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Dec 2020 - Jan 2022</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Düsseldorf, Germany</span>
+                        </div>
+                        <p class="description">
+                            Backend engineer on the Search Core team, developing microservices for price fetching,
+                            accommodation selection, ranking, and pagination using Java and the Spring framework.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Spring</span>
+                            <span class="tech-tag">gRPC</span>
+                            <span class="tech-tag">Kafka</span>
+                            <span class="tech-tag">Redis</span>
+                            <span class="tech-tag">Kubernetes</span>
+                            <span class="tech-tag">Hadoop</span>
+                            <span class="tech-tag">Hive</span>
+                            <span class="tech-tag">Prometheus</span>
+                            <span class="tech-tag">Grafana</span>
+                            <span class="tech-tag">GCP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- trivago - Software Engineer Ranking -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="trivago"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Software Engineer - Ranking</h3>
+                            <span class="company">trivago</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Dec 2019 - Dec 2020</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Düsseldorf, Germany</span>
+                        </div>
+                        <p class="description">
+                            Built ML models to sort user-displayed lists. Collaborated with data scientists to
+                            translate ML models into scalable production services.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Spring</span>
+                            <span class="tech-tag">Kubernetes</span>
+                            <span class="tech-tag">Kafka</span>
+                            <span class="tech-tag">Hadoop</span>
+                            <span class="tech-tag">Hive</span>
+                            <span class="tech-tag">Prometheus</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- trivago - Software Engineer User Profiling -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="trivago"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Software Engineer - User Profiling</h3>
+                            <span class="company">trivago</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Oct 2017 - Dec 2019</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Düsseldorf, Germany</span>
+                        </div>
+                        <p class="description">
+                            Developed stream processors to identify user intent. Built Python-based gRPC APIs.
+                            Successfully migrated services from AWS to Kubernetes on GCP.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Go</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">GCP</span>
+                            <span class="tech-tag">Kubernetes</span>
+                            <span class="tech-tag">Hadoop</span>
+                            <span class="tech-tag">Kafka</span>
+                            <span class="tech-tag">DynamoDB</span>
+                            <span class="tech-tag">BigTable</span>
+                            <span class="tech-tag">Prometheus</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Glispa Global Group -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="glispa"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Senior Software Engineer</h3>
+                            <span class="company">Glispa Global Group</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Jun 2016 - Aug 2017</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Berlin, Germany</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- smartB Energy Management -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="smartb"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Software Developer</h3>
+                            <span class="company">smartB Energy Management GmbH</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Sep 2015 - May 2016</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Berlin, Germany</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Globo.com - Personalization -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="globo"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Software Developer - Personalization and Recommendation</h3>
+                            <span class="company">Globo.com</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Jun - Jul 2015</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Rio de Janeiro, Brazil</span>
+                        </div>
+                        <p class="description">
+                            Worked on a recommendation system platform using big data and machine learning algorithms.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Scala</span>
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Apache Spark</span>
+                            <span class="tech-tag">Apache Kafka</span>
+                            <span class="tech-tag">Hadoop</span>
+                            <span class="tech-tag">HBase</span>
+                            <span class="tech-tag">Redis</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Globo.com - Semantic Team -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="globo"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Software Developer - Semantic Team</h3>
+                            <span class="company">Globo.com</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Nov 2014 - May 2015</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Rio de Janeiro, Brazil</span>
+                        </div>
+                        <p class="description">
+                            Backend developer building user profiles based on user interactions and semantic metadata.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Apache Spark</span>
+                            <span class="tech-tag">Apache Kafka</span>
+                            <span class="tech-tag">HBase</span>
+                            <span class="tech-tag">Scala</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chaordic Systems -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="chaordic"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Full Stack Developer</h3>
+                            <span class="company">Chaordic Systems</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Sep 2012 - Oct 2014</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Florianópolis, Brazil</span>
+                        </div>
+                        <p class="description">
+                            Developed e-commerce recommendation solutions and created new features leveraging real-time data processing.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Redis</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Ruby</span>
+                            <span class="tech-tag">AWS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portal Unimed -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="unimed"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Java Web Developer</h3>
+                            <span class="company">Portal Unimed</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Oct 2010 - Sep 2012</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Florianópolis, Brazil</span>
+                        </div>
+                        <p class="description">
+                            Developed web applications for the health insurance sector.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">Hibernate</span>
+                            <span class="tech-tag">JSF</span>
+                            <span class="tech-tag">JBoss</span>
+                            <span class="tech-tag">Struts</span>
+                            <span class="tech-tag">Oracle</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">Liferay</span>
+                            <span class="tech-tag">IReport</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Laboratório Médico Santa Luzia -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="santaluzia"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Java Web Developer</h3>
+                            <span class="company">Laboratório Médico Santa Luzia</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Jan 2010 - Oct 2010</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Florianópolis, Brazil</span>
+                        </div>
+                        <p class="description">
+                            Developed applications for sample transportation control and traceability.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Spring 3</span>
+                            <span class="tech-tag">EJB 3.1</span>
+                            <span class="tech-tag">Hibernate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faculdade Santa Amélia -->
+                <div class="timeline-item fade-in">
+                    <div class="company-logo" data-company="faculdade"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <h3>Software Developer Trainee</h3>
+                            <span class="company">Faculdade Santa Amélia</span>
+                        </div>
+                        <div class="timeline-meta">
+                            <span class="date"><i class="far fa-calendar"></i> Jul 2009 - Dec 2009</span>
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Ponta Grossa, Brazil</span>
+                        </div>
+                        <p class="description">
+                            Website development and network maintenance.
+                        </p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">CodeIgniter</span>
+                            <span class="tech-tag">Linux</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <div class="container">
+            <h2 class="section-title">Skills & Technologies</h2>
+
+            <div class="skills-grid">
+                <div class="skill-category fade-in">
+                    <h3><i class="fas fa-code"></i> Programming Languages</h3>
+                    <div class="skill-items">
+                        <span class="skill-item">Java</span>
+                        <span class="skill-item">Python</span>
+                        <span class="skill-item">Go</span>
+                        <span class="skill-item">Scala</span>
+                        <span class="skill-item">Node.js</span>
+                        <span class="skill-item">Ruby</span>
+                    </div>
+                </div>
+
+                <div class="skill-category fade-in">
+                    <h3><i class="fas fa-database"></i> Big Data & Data Science</h3>
+                    <div class="skill-items">
+                        <span class="skill-item">Apache Spark</span>
+                        <span class="skill-item">Hadoop</span>
+                        <span class="skill-item">Hive</span>
+                        <span class="skill-item">HBase</span>
+                        <span class="skill-item">Apache Kafka</span>
+                    </div>
+                </div>
+
+                <div class="skill-category fade-in">
+                    <h3><i class="fas fa-cloud"></i> Cloud & Infrastructure</h3>
+                    <div class="skill-items">
+                        <span class="skill-item">Kubernetes</span>
+                        <span class="skill-item">GCP</span>
+                        <span class="skill-item">AWS</span>
+                        <span class="skill-item">Linux</span>
+                        <span class="skill-item">Redis</span>
+                        <span class="skill-item">DynamoDB</span>
+                        <span class="skill-item">BigTable</span>
+                    </div>
+                </div>
+
+                <div class="skill-category fade-in">
+                    <h3><i class="fas fa-tools"></i> Frameworks & Tools</h3>
+                    <div class="skill-items">
+                        <span class="skill-item">Apache Flink</span>
+                        <span class="skill-item">Spring</span>
+                        <span class="skill-item">gRPC</span>
+                        <span class="skill-item">Prometheus</span>
+                        <span class="skill-item">Grafana</span>
+                        <span class="skill-item">Hibernate</span>
+                    </div>
+                </div>
+
+                <div class="skill-category fade-in">
+                    <h3><i class="fas fa-language"></i> Languages</h3>
+                    <div class="skill-items">
+                        <span class="skill-item">Portuguese (Native)</span>
+                        <span class="skill-item">English (Professional Working)</span>
+                        <span class="skill-item">Spanish (Professional Working)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section">
+        <div class="container">
+            <h2 class="section-title">Education & Certifications</h2>
+
+            <div class="education-grid">
+                <div class="education-item fade-in">
+                    <div class="education-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="education-content">
+                        <h3>Computer Engineer</h3>
+                        <p class="institution">Universidade Estadual de Ponta Grossa</p>
+                        <p class="date">2005 - 2009</p>
+                    </div>
+                </div>
+
+                <div class="education-item fade-in">
+                    <div class="education-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="education-content">
+                        <h3>Understanding and Visualizing Data with Python</h3>
+                        <p class="institution">Certification</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+
+            <div class="contact-content">
+                <p class="contact-intro">
+                    Feel free to reach out if you'd like to discuss technology, opportunities, or collaboration.
+                </p>
+
+                <div class="contact-methods">
+                    <a href="mailto:linkedin@chess.mozmail.com" class="contact-card fade-in">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>linkedin@chess.mozmail.com</p>
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="contact-card fade-in">
+                        <i class="fab fa-linkedin"></i>
+                        <h3>LinkedIn</h3>
+                        <p>Connect with me</p>
+                    </a>
+
+                    <div class="contact-card fade-in">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Location</h3>
+                        <p>Valencia, Spain</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-      </div>
-    </div>
-  </div>
-</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
