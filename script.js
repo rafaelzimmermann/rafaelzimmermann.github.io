@@ -5,6 +5,61 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // ===================================
+    // Dynamic Duration Calculations
+    // ===================================
+
+    function calculateDuration(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = endDate === 'present' ? new Date() : new Date(endDate);
+
+        let years = end.getFullYear() - start.getFullYear();
+        let months = end.getMonth() - start.getMonth();
+
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        if (years === 0) {
+            return `${months} month${months !== 1 ? 's' : ''}`;
+        } else if (months === 0) {
+            return `${years} year${years !== 1 ? 's' : ''}`;
+        } else {
+            return `${years} year${years !== 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+        }
+    }
+
+    function calculateTotalYears(startDate) {
+        const start = new Date(startDate);
+        const now = new Date();
+        const years = Math.floor((now - start) / (365.25 * 24 * 60 * 60 * 1000));
+        return `${years} years`;
+    }
+
+    // Update Shopify durations
+    const shopifyStart = '2022-02-01';
+    const shopifyDuration = calculateDuration(shopifyStart, 'present');
+
+    const shopifyDurationEl = document.getElementById('shopify-duration');
+    const shopifyRoleDurationEl = document.getElementById('shopify-role-duration');
+
+    if (shopifyDurationEl) {
+        shopifyDurationEl.textContent = shopifyDuration;
+    }
+    if (shopifyRoleDurationEl) {
+        shopifyRoleDurationEl.textContent = shopifyDuration;
+    }
+
+    // Update total experience
+    const careerStart = '2009-07-01';
+    const totalExperience = calculateTotalYears(careerStart);
+
+    const totalExpEl = document.getElementById('total-experience');
+    if (totalExpEl) {
+        totalExpEl.textContent = totalExperience;
+    }
+
+    // ===================================
     // Mobile Menu Toggle
     // ===================================
 
