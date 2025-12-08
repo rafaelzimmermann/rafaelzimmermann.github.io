@@ -98,6 +98,7 @@ body { font-family: var(--font-primary); font-size: 16px; line-height: 1.6; colo
 .company-logo[data-company="santaluzia"] { background-image: url('assets/images/santaluzia_logo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
 .company-logo[data-company="unimed"] { background-image: url('assets/images/unimedlab_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
 .company-logo[data-company="chaordic"] { background-image: url('assets/images/chaordic.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="smartb"] { background-image: url('assets/images/smartb.avif'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
 .timeline-content { background-color: var(--background-card); padding: 2rem; border-radius: 0.75rem; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid var(--border-color); }
 .timeline-content:hover { box-shadow: var(--shadow-lg); transform: translateX(5px); border-color: var(--primary-color); }
 .timeline-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.875rem; color: var(--text-light); }
