@@ -9,8 +9,9 @@ services:
     volumes:
       # Mount files for live reload during development
       - ./index.html:/usr/share/nginx/html/index.html
-      - ./style.css:/usr/share/nginx/html/style.css
-      - ./script.js:/usr/share/nginx/html/script.js
+      - ./mirror.html:/usr/share/nginx/html/mirror.html
+      - ./css:/usr/share/nginx/html/css
+      - ./js:/usr/share/nginx/html/js
       - ./assets:/usr/share/nginx/html/assets
     container_name: rafael-resume
     restart: unless-stopped

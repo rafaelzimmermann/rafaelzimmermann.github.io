@@ -53,7 +53,7 @@ body { font-family: var(--font-primary); font-size: 16px; line-height: 1.6; colo
 .main-content { margin-left: var(--sidebar-width); min-height: 100vh; }
 
 /* Hero Banner */
-#header { position: relative; height: 400px; background-image: linear-gradient(rgba(26, 29, 36, 0.7), rgba(26, 29, 36, 0.85)), url('assets/images/rafael_wide.png'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; }
+#header { position: relative; height: 400px; background-image: linear-gradient(rgba(26, 29, 36, 0.7), rgba(26, 29, 36, 0.85)), url('/assets/images/rafael_wide.png'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; }
 #header::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 168, 204, 0.05) 100%); pointer-events: none; }
 .header-content { position: relative; z-index: 2; max-width: 900px; padding: 0 2rem; }
 .name { font-size: 4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); letter-spacing: -0.02em; }
@@ -91,14 +91,14 @@ body { font-family: var(--font-primary); font-size: 16px; line-height: 1.6; colo
 .company-info { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
 .company-info h3 { margin: 0; font-size: 1.25rem; color: var(--text-primary); }
 .company-duration { font-size: 0.875rem; color: var(--text-light); font-weight: 500; }
-.company-logo[data-company="shopify"] { background-image: url('assets/images/shopify_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="trivago"] { background-image: url('assets/images/trivagonv_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="glispa"] { background-image: url('assets/images/glispa_gmbh_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="globo"] { background-image: url('assets/images/globo_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="santaluzia"] { background-image: url('assets/images/santaluzia_logo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="unimed"] { background-image: url('assets/images/unimedlab_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="chaordic"] { background-image: url('assets/images/chaordic.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
-.company-logo[data-company="smartb"] { background-image: url('assets/images/smartb.avif'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="shopify"] { background-image: url('/assets/images/shopify_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="trivago"] { background-image: url('/assets/images/trivagonv_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="glispa"] { background-image: url('/assets/images/glispa_gmbh_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="globo"] { background-image: url('/assets/images/globo_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="santaluzia"] { background-image: url('/assets/images/santaluzia_logo.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="unimed"] { background-image: url('/assets/images/unimedlab_logo.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="chaordic"] { background-image: url('/assets/images/chaordic.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
+.company-logo[data-company="smartb"] { background-image: url('/assets/images/smartb.avif'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: white; color: transparent; }
 .timeline-content { background-color: var(--background-card); padding: 2rem; border-radius: 0.75rem; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid var(--border-color); }
 .timeline-content:hover { box-shadow: var(--shadow-lg); transform: translateX(5px); border-color: var(--primary-color); }
 .timeline-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.875rem; color: var(--text-light); }
@@ -145,7 +145,7 @@ body { font-family: var(--font-primary); font-size: 16px; line-height: 1.6; colo
 .contact-card:hover { border-color: var(--primary-color); transform: translateY(-5px); box-shadow: var(--shadow-lg); background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 168, 204, 0.05)); }
 .contact-card i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1.5rem; }
 .contact-card h3 { font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary); }
-.contact-card p { color: var(--text-secondary); word-break: break-word; }
+.contact-card p { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .footer { background-color: var(--background-alt); color: var(--text-secondary); text-align: center; padding: 2rem; border-top: 1px solid var(--border-color); }
 .footer p { margin: 0; font-size: 0.875rem; }
