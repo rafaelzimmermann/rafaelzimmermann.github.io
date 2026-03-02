@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="How I built a minimal app launcher for Arch Linux in Rust, pair-programming with Claude Code.">
+    <meta name="description" content="How I built a minimal app launcher for Arch Linux in Rust, pair-programming with an AI coding assistant.">
     <meta name="author" content="Rafael Zimmermann">
 
     <!-- Open Graph -->
@@ -81,7 +81,7 @@
                     <figcaption>Trebuchet running on Hyprland — fuzzy search over installed .desktop applications</figcaption>
                 </figure>
 
-                <h2>The Problem</h2>
+                <h2>Three Launchers, Three Disappointments</h2>
                 <p>
                     Every Arch Linux setup eventually hits the same question: which app launcher do you use? The usual suspects
                     are <strong>rofi</strong>, <strong>wofi</strong>, and <strong>fuzzel</strong>. I tried all three.
@@ -98,7 +98,7 @@
                     write a minimal one from scratch? I had been using Rust for side projects, so the answer was obvious.
                 </p>
 
-                <h2>The Decision</h2>
+                <h2>Five Requirements and a Free Weekend</h2>
                 <p>
                     My requirements were deliberately minimal:
                 </p>
@@ -121,15 +121,18 @@
                     This time I paired with <strong>Claude Code</strong>, and the whole thing took a few hours.
                 </p>
 
-                <h2>Building It with Claude Code</h2>
+                <h2>The Build</h2>
                 <p>
                     I started with a straightforward prompt: scaffold a Rust binary that reads <code>.desktop</code>
                     files, filters them with fuzzy search, and launches the selected app. No UI yet —
                     just the core logic.
                 </p>
                 <p>
-                    Claude Code produced a working skeleton immediately. The <code>.desktop</code> file scanning,
-                    the fuzzy matching wired to a filtered list, the exec field-code stripping — things that
+                    The AI produced a working skeleton immediately. The <code>.desktop</code> file scanning,
+                    the fuzzy matching wired to a filtered list, the exec field-code stripping (the
+                    freedesktop spec defines placeholder codes like <code>%f</code>, <code>%F</code>,
+                    <code>%u</code>, <code>%U</code> that need to be stripped before passing the command
+                    to a shell — not hard, but easy to miss if you haven't read the spec) — things that
                     would have each cost me an hour of reading specs and docs came back in seconds. Not
                     perfect, but runnable. I could poke at it right away.
                 </p>
@@ -147,13 +150,13 @@
                     was dramatically compressed.
                 </p>
 
-                <h2>Technical Details</h2>
+                <h2>Under the Hood</h2>
                 <p>
                     The final stack is about as minimal as it gets for a GUI app in Rust:
                 </p>
                 <ul>
-                    <li><strong>iced + iced_layershell</strong> — immediate-mode GUI rendered on a Wayland layer-shell
-                        surface (Wayland-only, no X11)</li>
+                    <li><strong>iced + iced_layershell</strong> — Elm-inspired retained-mode GUI (model → update → view)
+                        running on a Wayland layer-shell surface (Wayland-only, no X11)</li>
                     <li><strong>fuzzy-matcher</strong> — the <code>SkimMatcherV2</code> algorithm, the same engine
                         behind the <code>skim</code> fuzzy finder</li>
                     <li><strong>freedesktop-desktop-entry + xdg</strong> — parse <code>.desktop</code> files and
@@ -164,10 +167,8 @@
                 </ul>
 
                 <p>Here's the actual search filter from <code>app.rs</code>:</p>
-<pre><code>Message::SearchChanged(query) => {
-    state.query = query.clone();
-    state.page = 0;
-    if query.is_empty() {
+<pre><code>fn apply_filter(state: &mut Trebuchet) {
+    if state.query.is_empty() {
         state.filtered = (0..state.apps.len()).collect();
     } else {
         let matcher = SkimMatcherV2::default();
@@ -175,12 +176,15 @@
             .apps
             .iter()
             .enumerate()
-            .filter_map(|(i, app)| {
-                matcher.fuzzy_match(&app.name, &query).map(|s| (i, s))
-            })
+            .filter_map(|(i, app)| matcher.fuzzy_match(&app.name, &state.query).map(|s| (i, s)))
             .collect();
         scored.sort_by(|a, b| b.1.cmp(&a.1));
         state.filtered = scored.into_iter().map(|(i, _)| i).collect();
+    }
+    if !state.query.is_empty() && !state.filtered.is_empty() {
+        state.selected = Some(0);
+    } else {
+        state.selected = None;
     }
 }</code></pre>
 
@@ -190,10 +194,13 @@
                     Firefox above anything that merely contains those letters scattered across the name.
                 </p>
 
-                <h2>The Result</h2>
+                <h2>What It Does (and Doesn't)</h2>
                 <p>
                     The launcher does exactly what I wanted and nothing more. I open it with a keybind,
-                    type a few characters, hit enter, and the app opens. It's fast. Closing without selecting does nothing.
+                    type a few characters, hit enter, and the app opens. A quick bash script timing the
+                    process puts cold start at 24ms — and the binary lands at 25MB with rust-embed baking
+                    the icons in. Neither number is surprising given the stack, but good to know.
+                    Closing without selecting does nothing.
                 </p>
                 <p>
                     What it <em>doesn't</em> do: remember history, weight frequently used apps, act as a file
@@ -213,7 +220,7 @@
                     <code>hyprland.conf</code> is all it takes to bind it to a key.
                 </p>
 
-                <h2>What This Changes</h2>
+                <h2>Hours vs. Weeks</h2>
                 <p>
                     The honest version of this story without Claude Code: trebuchet never gets built.
                     Not because it's technically out of reach, but because the research overhead would have
@@ -228,7 +235,7 @@
                     how you work, instead of settling for something close enough.
                 </p>
                 <p>
-                    The dynamic I found most useful: Claude Code is fastest when the problem is
+                    The dynamic I found most useful: an AI coding assistant is fastest when the problem is
                     well-scoped. "Parse <code>.desktop</code> files and return a list of app entries"
                     gets an accurate result immediately. The architecture — what modules to split things
                     into, which trade-offs to make — that still needs a human. But the gap between a
