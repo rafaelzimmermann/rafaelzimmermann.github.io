@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rafael Zimmermann's Blog - Technical writing on software engineering, Rust, Linux, and distributed systems.">
+    <meta name="author" content="Rafael Zimmermann">
+
+    <title>Blog - Rafael Zimmermann</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-header">
+            <a href="index.html#header" class="nav-logo"></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html#about" class="nav-link">About</a></li>
+            <li><a href="index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="index.html#education" class="nav-link">Education</a></li>
+            <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="blog-header">
+            <h1>Blog</h1>
+            <p>Technical writing on software engineering, Rust, Linux, and distributed systems.</p>
+        </div>
+
+        <div class="blog-list">
+            <!-- Post Card: App Launcher in Rust -->
+            <a href="posts/app-launcher-rust.html" class="post-card fade-in">
+                <h2>I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust</h2>
+                <div class="post-meta">
+                    <span class="post-date"><i class="far fa-calendar"></i> March 2026</span>
+                    <span class="post-reading-time"><i class="far fa-clock"></i> 6 min read</span>
+                </div>
+                <p class="post-excerpt">
+                    Rofi, wofi, fuzzel — they all work, but none of them felt quite right. So I pair-programmed a minimal
+                    Rust app launcher with Claude Code, and learned a few things about both Rust and AI-assisted development along the way.
+                </p>
+                <span class="post-read-more">Read more <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

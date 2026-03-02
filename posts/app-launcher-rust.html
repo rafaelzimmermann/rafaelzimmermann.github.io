@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I built a minimal app launcher for Arch Linux in Rust, pair-programming with Claude Code.">
+    <meta name="author" content="Rafael Zimmermann">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust">
+    <meta property="og:description" content="Rofi, wofi, fuzzel — none felt right. So I pair-programmed a minimal Rust app launcher with Claude Code, and finished it in a few hours instead of weeks.">
+    <meta property="og:url" content="https://rafaelzimmermann.github.io/posts/app-launcher-rust.html">
+    <meta property="og:image" content="https://rafaelzimmermann.github.io/assets/images/trebuchet-screenshot.png">
+
+    <title>I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust - Rafael Zimmermann</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo"></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Blog
+            </a>
+
+            <header class="article-header">
+                <h1>I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust</h1>
+                <div class="article-meta">
+                    <span class="post-date"><i class="far fa-calendar"></i> March 2026</span>
+                    <span class="post-reading-time"><i class="far fa-clock"></i> 6 min read</span>
+                </div>
+            </header>
+
+            <div class="article-content">
+
+                <figure class="article-figure">
+                    <img src="/assets/images/trebuchet-screenshot.png" alt="Trebuchet app launcher showing a grid of application icons with a search bar" style="width:100%;border-radius:0.5rem;border:1px solid var(--border-color);">
+                    <figcaption>Trebuchet running on Hyprland — fuzzy search over installed .desktop applications</figcaption>
+                </figure>
+
+                <h2>The Problem</h2>
+                <p>
+                    Every Arch Linux setup eventually hits the same question: which app launcher do you use? The usual suspects
+                    are <strong>rofi</strong>, <strong>wofi</strong>, and <strong>fuzzel</strong>. I tried all three.
+                </p>
+                <p>
+                    Rofi is powerful, but it carries years of accumulated config options and X11-era baggage.
+                    Wofi works on Wayland but has its own quirks and the theming story never clicked for me.
+                    Fuzzel is probably the cleanest of the three, but I kept running into small friction points
+                    — missing features I wanted, features I couldn't turn off, a color scheme that wouldn't quite match
+                    my terminal setup.
+                </p>
+                <p>
+                    At some point I stopped fiddling with config files and asked myself: how hard would it actually be to
+                    write a minimal one from scratch? I had been using Rust for side projects, so the answer was obvious.
+                </p>
+
+                <h2>The Decision</h2>
+                <p>
+                    My requirements were deliberately minimal:
+                </p>
+                <ul>
+                    <li>Discover installed apps from <code>.desktop</code> files</li>
+                    <li>Fuzzy filter as I type</li>
+                    <li>Launch the selected program and exit immediately</li>
+                    <li>A Wayland layer-shell overlay — centered on the active screen, no window chrome</li>
+                    <li>Look exactly like the rest of my setup</li>
+                </ul>
+                <p>
+                    Normally, a project like this would sit in the "someday" pile for months. Between
+                    researching which Wayland crates are production-ready, reading the freedesktop
+                    <code>.desktop</code> spec, figuring out how layer-shell surfaces work, picking a GUI
+                    framework and learning its model — that's easily weeks of evenings before you have
+                    anything running. I'd been through that loop before on other projects. Research, try,
+                    hit a wall, research again.
+                </p>
+                <p>
+                    This time I paired with <strong>Claude Code</strong>, and the whole thing took a few hours.
+                </p>
+
+                <h2>Building It with Claude Code</h2>
+                <p>
+                    I started with a straightforward prompt: scaffold a Rust binary that reads <code>.desktop</code>
+                    files, filters them with fuzzy search, and launches the selected app. No UI yet —
+                    just the core logic.
+                </p>
+                <p>
+                    Claude Code produced a working skeleton immediately. The <code>.desktop</code> file scanning,
+                    the fuzzy matching wired to a filtered list, the exec field-code stripping — things that
+                    would have each cost me an hour of reading specs and docs came back in seconds. Not
+                    perfect, but runnable. I could poke at it right away.
+                </p>
+                <p>
+                    From there the loop was fast: read the generated code, understand it, push on the next piece.
+                    "Now wire this into an iced window with a layer-shell surface." "The fuzzy sort should rank
+                    higher-scoring matches first." "Icons should fall back to the system theme if no embedded
+                    SVG is found." Each step built on the last without the usual detour into documentation rabbit holes.
+                </p>
+                <p>
+                    The places where I had to slow down and think were the architectural decisions:
+                    committing to Wayland-only via <code>iced_layershell</code>, whether to scan
+                    <code>.desktop</code> files at startup or lazily, how to structure the event loop.
+                    Those choices were still mine. But everything between a decision and working code
+                    was dramatically compressed.
+                </p>
+
+                <h2>Technical Details</h2>
+                <p>
+                    The final stack is about as minimal as it gets for a GUI app in Rust:
+                </p>
+                <ul>
+                    <li><strong>iced + iced_layershell</strong> — immediate-mode GUI rendered on a Wayland layer-shell
+                        surface (Wayland-only, no X11)</li>
+                    <li><strong>fuzzy-matcher</strong> — the <code>SkimMatcherV2</code> algorithm, the same engine
+                        behind the <code>skim</code> fuzzy finder</li>
+                    <li><strong>freedesktop-desktop-entry + xdg</strong> — parse <code>.desktop</code> files and
+                        resolve XDG base directories</li>
+                    <li><strong>rust-embed</strong> — compile SVG/PNG icons directly into the binary so they're
+                        available even when the system icon theme is missing an entry</li>
+                    <li><strong>std::process::Command</strong> — spawn the selected app and immediately exit</li>
+                </ul>
+
+                <p>Here's the actual search filter from <code>app.rs</code>:</p>
+<pre><code>Message::SearchChanged(query) => {
+    state.query = query.clone();
+    state.page = 0;
+    if query.is_empty() {
+        state.filtered = (0..state.apps.len()).collect();
+    } else {
+        let matcher = SkimMatcherV2::default();
+        let mut scored: Vec&lt;(usize, i64)&gt; = state
+            .apps
+            .iter()
+            .enumerate()
+            .filter_map(|(i, app)| {
+                matcher.fuzzy_match(&app.name, &query).map(|s| (i, s))
+            })
+            .collect();
+        scored.sort_by(|a, b| b.1.cmp(&a.1));
+        state.filtered = scored.into_iter().map(|(i, _)| i).collect();
+    }
+}</code></pre>
+
+                <p>
+                    Each keypress re-scores all app names against the current query and sorts by score descending.
+                    The skim algorithm naturally rewards consecutive and prefix matches, so typing "fire" surfaces
+                    Firefox above anything that merely contains those letters scattered across the name.
+                </p>
+
+                <h2>The Result</h2>
+                <p>
+                    The launcher does exactly what I wanted and nothing more. I open it with a keybind,
+                    type a few characters, hit enter, and the app opens. It's fast. Closing without selecting does nothing.
+                </p>
+                <p>
+                    What it <em>doesn't</em> do: remember history, weight frequently used apps, act as a file
+                    browser or calculator. All deliberate omissions. If I ever want frecency ranking I'll add it
+                    then, but months later I still haven't missed it.
+                </p>
+                <p>
+                    The part I'm most happy with is the icons. Trebuchet sources them from multiple places —
+                    bundled SVGs compiled into the binary, the system icon theme, and absolute paths from
+                    <code>.desktop</code> files — with SVGs preferred over rasters. On a high-DPI monitor
+                    the difference is noticeable: every icon is crisp and correctly sized, no blurry
+                    upscaled PNGs. It's a small thing, but it's the kind of polish that makes a tool
+                    feel finished.
+                </p>
+                <p>
+                    The window is fully transparent, so it sits cleanly over any desktop without fighting the
+                    theme. Keybindings are configured in your compositor — a single line in
+                    <code>hyprland.conf</code> is all it takes to bind it to a key.
+                </p>
+
+                <h2>What This Changes</h2>
+                <p>
+                    The honest version of this story without Claude Code: trebuchet never gets built.
+                    Not because it's technically out of reach, but because the research overhead would have
+                    kept pushing it to "next weekend." The Wayland ecosystem in Rust is still young —
+                    finding the right crates, understanding how layer-shell works, learning iced's
+                    architecture — each of those is a real time cost that adds up fast for a personal project
+                    with no deadline.
+                </p>
+                <p>
+                    A few hours is a fundamentally different category than a few weeks. It means you
+                    can actually finish things. Scratch your own itches. Build tools that fit exactly
+                    how you work, instead of settling for something close enough.
+                </p>
+                <p>
+                    The dynamic I found most useful: Claude Code is fastest when the problem is
+                    well-scoped. "Parse <code>.desktop</code> files and return a list of app entries"
+                    gets an accurate result immediately. The architecture — what modules to split things
+                    into, which trade-offs to make — that still needs a human. But the gap between a
+                    decision and working code is now almost nothing. That's what makes the difference.
+                </p>
+                <p>
+                    One last note: I'm relatively new to Rust, and most of the tech stack in this project —
+                    iced, Wayland, the freedesktop ecosystem — was unfamiliar territory. If you spot
+                    something that could be done better, I'd genuinely love to hear it. The code is on
+                    <a href="https://github.com/rafaelzimmermann/trebuchet" target="_blank" rel="noopener noreferrer">GitHub</a>.
+                </p>
+
+            </div>
+
+            <div class="arch-btw">
+                <p>
+                    Oh, and I installed Arch Linux for the first time this same weekend. So apparently
+                    I'm an Arch user now, which means I'm contractually obligated to mention it.
+                </p>
+                <img src="/assets/images/i-use-arch-btw.png" alt="I use Arch btw" style="width:100%;max-width:400px;display:block;margin:1.5rem auto 0;border-radius:0.5rem;">
+            </div>
+
+            <div class="share-section">
+                <span class="share-label">Share</span>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Frafaelzimmermann.github.io%2Fposts%2Fapp-launcher-rust.html"
+                   target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on LinkedIn">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="https://www.reddit.com/submit?url=https%3A%2F%2Frafaelzimmermann.github.io%2Fposts%2Fapp-launcher-rust.html"
+                   target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on Reddit">
+                    <i class="fab fa-reddit"></i> Reddit
+                </a>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

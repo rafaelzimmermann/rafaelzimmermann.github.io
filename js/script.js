@@ -81,6 +81,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+
+            // Only intercept anchor links; let page links navigate normally
+            if (!href || !href.startsWith('#')) {
+                return;
+            }
+
             e.preventDefault();
 
             // Close mobile menu
@@ -90,8 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body.classList.remove('nav-open');
             }
 
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
+            const targetSection = document.querySelector(href);
 
             if (targetSection) {
                 // For desktop, account for no navbar height (fixed sidebar)
