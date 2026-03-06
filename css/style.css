@@ -216,6 +216,23 @@ body { font-family: var(--font-primary); font-size: 16px; line-height: 1.6; colo
 .article-content strong { color: var(--text-primary); font-weight: 600; }
 .arch-btw { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-style: italic; }
 
+.table-wrapper { overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--border-color); border-radius: 0.5rem; }
+.comparison-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.comparison-table th, .comparison-table td { padding: 0.75rem 1rem; text-align: center; border-bottom: 1px solid var(--border-color); }
+.comparison-table th:first-child, .comparison-table td:first-child { text-align: left; padding-left: 1.25rem; }
+.comparison-table thead tr { background-color: var(--background-alt); }
+.comparison-table th { color: var(--text-secondary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.comparison-table th:last-child { color: var(--primary-color); }
+.comparison-table td:first-child { color: var(--text-primary); font-weight: 500; white-space: nowrap; }
+.comparison-table td { color: var(--text-secondary); }
+.comparison-table tbody tr:last-child td { border-bottom: none; }
+.comparison-table tbody tr:hover td { background-color: rgba(255,255,255,0.03); }
+.comparison-table td:last-child { color: var(--primary-light); font-weight: 500; background-color: rgba(0, 212, 255, 0.04); }
+.comparison-table th:last-child, .comparison-table td:last-child { border-left: 1px solid rgba(0, 212, 255, 0.2); }
+
+.cta-button { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.5rem; background-color: var(--background-card); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+.cta-button:hover { border-color: var(--primary-light); color: var(--primary-light); }
+
 .share-section { display: flex; align-items: center; gap: 1rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; }
 .share-label { font-size: 0.85rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
 .share-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 600; background-color: var(--background-card); transition: var(--transition); }

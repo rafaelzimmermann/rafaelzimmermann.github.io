@@ -9,7 +9,7 @@
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:title" content="I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust">
-    <meta property="og:description" content="Rofi, wofi, fuzzel — none felt right. So I pair-programmed a minimal Rust app launcher with Claude Code, and finished it in a few hours instead of weeks.">
+    <meta property="og:description" content="Rofi, wofi, fuzzel. None felt right. So I pair-programmed a minimal Rust app launcher with Claude Code, and finished it in a few hours instead of weeks.">
     <meta property="og:url" content="https://rafaelzimmermann.github.io/posts/app-launcher-rust.html">
     <meta property="og:image" content="https://rafaelzimmermann.github.io/assets/images/trebuchet-screenshot.png">
 
@@ -70,7 +70,7 @@
                 <h1>I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust</h1>
                 <div class="article-meta">
                     <span class="post-date"><i class="far fa-calendar"></i> March 2026</span>
-                    <span class="post-reading-time"><i class="far fa-clock"></i> 6 min read</span>
+                    <span class="post-reading-time"><i class="far fa-clock"></i> 9 min read</span>
                 </div>
             </header>
 
@@ -78,19 +78,25 @@
 
                 <figure class="article-figure">
                     <video src="/assets/videos/trebuchet-demo.mp4" controls style="width:100%;border-radius:0.5rem;border:1px solid var(--border-color);"></video>
-                    <figcaption>Trebuchet in action — fuzzy search over installed .desktop applications on Hyprland</figcaption>
+                    <figcaption>Trebuchet in action: fuzzy search over installed .desktop applications on Hyprland</figcaption>
                 </figure>
 
                 <h2>Three Launchers, Three Disappointments</h2>
+                <p>
+                    There's a certain irony in spending three hours configuring a tool whose entire job is to save
+                    you two seconds. App launchers for Linux are where that irony lives. You install one, read the
+                    man page, write the config, tweak the theme, and somewhere along the way forget you just wanted
+                    to open Firefox faster.
+                </p>
                 <p>
                     Every Arch Linux setup eventually hits the same question: which app launcher do you use? The usual suspects
                     are <strong>rofi</strong>, <strong>wofi</strong>, and <strong>fuzzel</strong>. I tried all three.
                 </p>
                 <p>
                     Rofi is powerful, but it carries years of accumulated config options and X11-era baggage.
-                    Wofi works on Wayland but has its own quirks and the theming story never clicked for me.
-                    Fuzzel is probably the cleanest of the three, but I kept running into small friction points
-                    — missing features I wanted, features I couldn't turn off, a color scheme that wouldn't quite match
+                    Wofi works on Wayland but has its own quirks and expects you to bring your own CSS theme, which is not something I am used to, especially coming from Ubuntu.
+                    Fuzzel is probably the cleanest of the three, but I kept running into small friction points:
+                    missing features I wanted, features I couldn't turn off, a color scheme that wouldn't quite match
                     my terminal setup.
                 </p>
                 <p>
@@ -98,7 +104,61 @@
                     write a minimal one from scratch? I had been using Rust for side projects, so the answer was obvious.
                 </p>
 
-                <h2>Five Requirements and a Free Weekend</h2>
+                <div class="table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>rofi</th>
+                            <th>wofi</th>
+                            <th>fuzzel</th>
+                            <th>trebuchet</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wayland-native</td>
+                            <td>No (XWayland)</td>
+                            <td>Yes</td>
+                            <td>Yes</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Config required</td>
+                            <td>Yes (extensive)</td>
+                            <td>Yes</td>
+                            <td>Minimal</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td>Fuzzy scoring</td>
+                            <td>Yes</td>
+                            <td>Basic</td>
+                            <td>Yes</td>
+                            <td>Yes (skim)</td>
+                        </tr>
+                        <tr>
+                            <td>SVG icons</td>
+                            <td>No</td>
+                            <td>No</td>
+                            <td>No</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Runtime dependencies</td>
+                            <td>Many</td>
+                            <td>GTK</td>
+                            <td>Few</td>
+                            <td>None (static)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.5rem;">
+                    Rough picture, not a benchmark. "Config required" means you need to write something before it looks or behaves the way you want.
+                </p>
+
+                <h2>Five Requirements and a Few Hours</h2>
                 <p>
                     My requirements were deliberately minimal:
                 </p>
@@ -106,14 +166,14 @@
                     <li>Discover installed apps from <code>.desktop</code> files</li>
                     <li>Fuzzy filter as I type</li>
                     <li>Launch the selected program and exit immediately</li>
-                    <li>A Wayland layer-shell overlay — centered on the active screen, no window chrome</li>
+                    <li>A Wayland layer-shell overlay (centered on the active screen, no window chrome)</li>
                     <li>Look exactly like the rest of my setup</li>
                 </ul>
                 <p>
                     Normally, a project like this would sit in the "someday" pile for months. Between
                     researching which Wayland crates are production-ready, reading the freedesktop
                     <code>.desktop</code> spec, figuring out how layer-shell surfaces work, picking a GUI
-                    framework and learning its model — that's easily weeks of evenings before you have
+                    framework and learning its model. That's easily weeks of evenings before you have
                     anything running. I'd been through that loop before on other projects. Research, try,
                     hit a wall, research again.
                 </p>
@@ -124,7 +184,7 @@
                 <h2>The Build</h2>
                 <p>
                     I started with a straightforward prompt: scaffold a Rust binary that reads <code>.desktop</code>
-                    files, filters them with fuzzy search, and launches the selected app. No UI yet —
+                    files, filters them with fuzzy search, and launches the selected app. No UI yet,
                     just the core logic.
                 </p>
                 <p>
@@ -132,7 +192,7 @@
                     the fuzzy matching wired to a filtered list, the exec field-code stripping (the
                     freedesktop spec defines placeholder codes like <code>%f</code>, <code>%F</code>,
                     <code>%u</code>, <code>%U</code> that need to be stripped before passing the command
-                    to a shell — not hard, but easy to miss if you haven't read the spec) — things that
+                    to a shell; not hard, but easy to miss if you haven't read the spec), things that
                     would have each cost me an hour of reading specs and docs came back in seconds. Not
                     perfect, but runnable. I could poke at it right away.
                 </p>
@@ -143,9 +203,22 @@
                     SVG is found." Each step built on the last without the usual detour into documentation rabbit holes.
                 </p>
                 <p>
-                    The places where I had to slow down and think were the architectural decisions:
-                    committing to Wayland-only via <code>iced_layershell</code>, whether to scan
-                    <code>.desktop</code> files at startup or lazily, how to structure the event loop.
+                    The places where I had to slow down and think were the architectural decisions, and those were genuinely worth thinking about:
+                </p>
+                <ul>
+                    <li><strong>Wayland-only</strong>: Chose simplicity over compatibility. Hyprland is
+                        Wayland-only; supporting X11 via XWayland would add real complexity for zero
+                        personal benefit. If you need X11 support, this probably isn't your launcher.</li>
+                    <li><strong>Startup scanning</strong>: <code>.desktop</code> files are scanned once
+                        at launch. Since the launcher opens fresh each time, a 24ms startup includes
+                        scanning, which is acceptable. Lazy scanning would add complexity with no latency benefit
+                        after the first keypress.</li>
+                    <li><strong>Single state struct</strong>: All state lives in one <code>Trebuchet</code>
+                        struct. This matches iced's Elm model cleanly: one model, one update function,
+                        one view. Splitting state across modules would fight the architecture rather than
+                        use it.</li>
+                </ul>
+                <p>
                     Those choices were still mine. But everything between a decision and working code
                     was dramatically compressed.
                 </p>
@@ -155,16 +228,38 @@
                     The final stack is about as minimal as it gets for a GUI app in Rust:
                 </p>
                 <ul>
-                    <li><strong>iced + iced_layershell</strong> — Elm-inspired retained-mode GUI (model → update → view)
+                    <li><strong>iced + iced_layershell</strong>: Elm-inspired retained-mode GUI (model, update, view)
                         running on a Wayland layer-shell surface (Wayland-only, no X11)</li>
-                    <li><strong>fuzzy-matcher</strong> — the <code>SkimMatcherV2</code> algorithm, the same engine
+                    <li><strong>fuzzy-matcher</strong>: the <code>SkimMatcherV2</code> algorithm, the same engine
                         behind the <code>skim</code> fuzzy finder</li>
-                    <li><strong>freedesktop-desktop-entry + xdg</strong> — parse <code>.desktop</code> files and
+                    <li><strong>freedesktop-desktop-entry + xdg</strong>: parse <code>.desktop</code> files and
                         resolve XDG base directories</li>
-                    <li><strong>rust-embed</strong> — compile SVG/PNG icons directly into the binary so they're
+                    <li><strong>rust-embed</strong>: compile SVG/PNG icons directly into the binary so they're
                         available even when the system icon theme is missing an entry</li>
-                    <li><strong>std::process::Command</strong> — spawn the selected app and immediately exit</li>
+                    <li><strong>std::process::Command</strong>: spawn the selected app and immediately exit</li>
                 </ul>
+
+                <p><strong>Why these and not the obvious alternatives?</strong></p>
+                <p>
+                    <strong>iced over egui, slint, or GTK</strong>: The Elm architecture (model → update → view)
+                    maps cleanly onto a single-purpose tool with minimal dynamic state. <code>iced_layershell</code>
+                    gives a Wayland layer-shell surface with no X11 dependency baked in. GTK would have pulled in
+                    a large runtime and a lot of indirection I didn't need. egui's immediate-mode approach felt
+                    like overkill for something that only updates on keypress.
+                </p>
+                <p>
+                    <strong>SkimMatcherV2 over substring or regex</strong>: Score-based ranking with
+                    consecutive-match bonuses makes results feel smart rather than mechanical. Typing "fire"
+                    surfaces Firefox first, not just anything containing those four letters in any order.
+                    Exact substring matching would need manual ranking logic bolted on top, at which point
+                    you're implementing fuzzy matching anyway.
+                </p>
+                <p>
+                    <strong>rust-embed over runtime asset loading</strong>: Compiling the icons into the binary
+                    means single-file deployment with no asset path confusion and no breakage when the launcher
+                    is invoked from a keybind with a weird working directory. The binary is larger as a result
+                    (25MB), but that tradeoff is easy to accept for a tool you open thousands of times.
+                </p>
 
                 <p>Here's the actual search filter from <code>app.rs</code>:</p>
 <pre><code>fn apply_filter(state: &mut Trebuchet) {
@@ -197,36 +292,68 @@
                 <h2>What It Does (and Doesn't)</h2>
                 <p>
                     The launcher does exactly what I wanted and nothing more. I open it with a keybind,
-                    type a few characters, hit enter, and the app opens. A quick bash script timing the
-                    process puts cold start at 24ms — and the binary lands at 25MB with rust-embed baking
-                    the icons in. Neither number is surprising given the stack, but good to know.
-                    Closing without selecting does nothing.
+                    type a few characters, hit enter, and the app opens. Closing without selecting does nothing.
+                </p>
+                <ul>
+                    <li><strong>24ms</strong> cold start (measured with a small bash script)</li>
+                    <li><strong>25MB</strong> binary, with all icons compiled in via rust-embed</li>
+                </ul>
+                <p>
+                    Neither number is surprising given the stack, but good to have confirmed.
                 </p>
                 <p>
                     What it <em>doesn't</em> do: remember history, weight frequently used apps, act as a file
                     browser or calculator. All deliberate omissions. If I ever want frecency ranking I'll add it then.
                 </p>
                 <p>
-                    The part I'm most happy with is the icons. Trebuchet sources them from multiple places —
+                    The part I'm most happy with is the icons. Trebuchet sources them from multiple places:
                     bundled SVGs compiled into the binary, the system icon theme, and absolute paths from
-                    <code>.desktop</code> files — with SVGs preferred over rasters. On a high-DPI monitor
+                    <code>.desktop</code> files. SVGs are preferred over rasters. On a high-DPI monitor
                     the difference is noticeable: every icon is crisp and correctly sized, no blurry
                     upscaled PNGs. It's a small thing, but it's the kind of polish that makes a tool
                     feel finished.
                 </p>
                 <p>
                     The window is fully transparent, so it sits cleanly over any desktop without fighting the
-                    theme. Keybindings are configured in your compositor — a single line in
+                    theme. Keybindings are configured in your compositor. A single line in
                     <code>hyprland.conf</code> is all it takes to bind it to a key.
+                </p>
+
+                <h2>What Made It Hard</h2>
+                <p>
+                    The fast parts were genuinely fast. But a few things took longer than expected and are worth
+                    being honest about.
+                </p>
+                <p>
+                    <strong><code>iced_layershell</code> is young.</strong> The documentation is sparse, and the
+                    API has the kind of rough edges you'd expect from a crate that's still finding its shape.
+                    Getting the surface positioned and sized correctly meant reading the source code rather than
+                    the docs, which is fine but slower. If you're building on top of it, budget time for that.
+                </p>
+                <p>
+                    <strong>iced's message-passing model takes adjustment.</strong> Coming from an imperative
+                    background, thinking in terms of <code>Message</code> enums and a pure <code>update</code>
+                    function is a real mental shift. You can't just reach into state and change it; every
+                    interaction has to become a message, and every state change has to flow through one function.
+                    The discipline pays off (the code stays clean and predictable), but the first hour or two
+                    of fighting the model is real.
+                </p>
+                <p>
+                    <strong>Icon resolution edge cases.</strong> System icon theme lookup sounds simple until
+                    you're actually doing it. Themes inherit from parent themes. Icon sizes matter: requesting
+                    a 48px icon when only 256px is available might or might not give you something usable.
+                    Some <code>.desktop</code> files embed absolute icon paths, some use bare icon names, some
+                    have no icon at all. Getting graceful fallbacks that cover all those cases without crashing
+                    or rendering blank squares took several iterations to get right.
                 </p>
 
                 <h2>Hours vs. Weeks</h2>
                 <p>
                     The honest version of this story without Claude Code: trebuchet never gets built.
                     Not because it's technically out of reach, but because the research overhead would have
-                    kept pushing it to "next weekend." The Wayland ecosystem in Rust is still young —
+                    kept pushing it to "next weekend." The Wayland ecosystem in Rust is still young, and
                     finding the right crates, understanding how layer-shell works, learning iced's
-                    architecture — each of those is a real time cost that adds up fast for a personal project
+                    architecture: each of those is a real time cost that adds up fast for a personal project
                     with no deadline.
                 </p>
                 <p>
@@ -237,15 +364,44 @@
                 <p>
                     The dynamic I found most useful: an AI coding assistant is fastest when the problem is
                     well-scoped. "Parse <code>.desktop</code> files and return a list of app entries"
-                    gets an accurate result immediately. The architecture — what modules to split things
-                    into, which trade-offs to make — that still needs a human. But the gap between a
+                    gets an accurate result immediately. The architecture (what modules to split things
+                    into, which trade-offs to make) still needs a human. But the gap between a
                     decision and working code is now almost nothing. That's what makes the difference.
                 </p>
                 <p>
-                    One last note: I'm relatively new to Rust, and most of the tech stack in this project —
-                    iced, Wayland, the freedesktop ecosystem — was unfamiliar territory. If you spot
-                    something that could be done better, I'd genuinely love to hear it. The code is on
-                    <a href="https://github.com/rafaelzimmermann/trebuchet" target="_blank" rel="noopener noreferrer">GitHub</a>.
+                    Trebuchet does exactly what I needed: open fast, filter accurately, launch the app, get out
+                    of the way. No config file, no theming story to maintain, no features I'll never use. It
+                    fits my setup because I built it for my setup, and it took an afternoon instead of a backlog
+                    item that ages forever.
+                </p>
+                <p>
+                    That speed comes with a catch. The first version of Trebuchet had unnecessary coupling that
+                    looked fine in isolation but would have gotten painful quickly if I kept building on it the
+                    same way. The LLM doesn't know what the codebase will look like in three features. It solves
+                    the problem in front of it, and it does that well. But vibe coding stacked on top of vibe
+                    coding compounds. Left unchecked, you end up with something that works but that nobody,
+                    including you, wants to touch.
+                </p>
+                <p>
+                    So at some point you have to slow down, read the code as if you didn't write it, and fix what
+                    doesn't hold up. Enforce a consistent pattern. Rewrite the bits that grew organically into
+                    something harder to follow than they need to be. Think of it less as cleanup and more as the
+                    part of the process that keeps the next session from being slower than the last.
+                </p>
+                <p>
+                    The code is on GitHub. Take a look, open an issue, send a PR. Most of the stack here
+                    (iced, Wayland, the freedesktop ecosystem) was new territory for me, so if you see a
+                    better way to do something I'd be glad to hear it.
+                </p>
+                <p style="margin-top:1.5rem;">
+                    <a href="https://github.com/rafaelzimmermann/trebuchet" target="_blank" rel="noopener noreferrer"
+                       class="cta-button">
+                        <i class="fab fa-github"></i> View Trebuchet on GitHub
+                    </a>
+                </p>
+                <p>
+                    What does your launcher setup look like? Still on rofi, or did you go further down the
+                    build-your-own path?
                 </p>
 
             </div>
