@@ -5,8 +5,7 @@ FROM nginx:alpine
 RUN apk add --no-cache openssl
 
 # Copy website files to nginx html directory
-COPY index.html /usr/share/nginx/html/
-COPY mirror.html /usr/share/nginx/html/
+COPY *.html /usr/share/nginx/html/
 COPY css/ /usr/share/nginx/html/css/
 COPY js/ /usr/share/nginx/html/js/
 COPY assets/ /usr/share/nginx/html/assets/
