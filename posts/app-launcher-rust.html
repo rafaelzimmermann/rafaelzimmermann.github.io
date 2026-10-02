@@ -16,23 +16,22 @@
     <title>I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust - Rafael Zimmermann</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="/css/style.css?v=20260302">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <!-- Navigation -->
-    <nav id="navbar">
+    <nav id="navbar" aria-label="Main navigation">
         <div class="nav-header">
-            <a href="/index.html#header" class="nav-logo"></a>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -47,20 +46,20 @@
             <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
         </ul>
         <div class="nav-footer">
-            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
                 <i class="fas fa-envelope"></i>
             </a>
-            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
                 <i class="fab fa-linkedin"></i>
             </a>
-            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub">
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
                 <i class="fab fa-github"></i>
             </a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content">
+    <main class="main-content" id="main">
         <article class="article-container">
             <a href="/blog.html" class="back-link">
                 <i class="fas fa-arrow-left"></i> Back to Blog
@@ -69,7 +68,7 @@
             <header class="article-header">
                 <h1>I Didn't Like App Launchers for Arch Linux, So I Wrote My Own in Rust</h1>
                 <div class="article-meta">
-                    <span class="post-date"><i class="far fa-calendar"></i> March 2026</span>
+                    <time class="post-date" datetime="2026-03-11">March 11, 2026</time>
                     <span class="post-reading-time"><i class="far fa-clock"></i> 9 min read</span>
                 </div>
             </header>
@@ -432,8 +431,8 @@
                 <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
             </div>
         </footer>
-    </div>
+    </main>
 
-    <script src="/js/script.js?v=20260302"></script>
+    <script src="/js/script.js?v=20261002"></script>
 </body>
 </html>
