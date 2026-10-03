@@ -47,7 +47,7 @@
             </header>
             <div class="article-content">
                 <p>The interaction I wanted was small: highlight some text, press a shortcut, and have the computer read it aloud. A little window should let me pause or change the speed, then disappear when it finishes. That became <a href="https://github.com/rafaelzimmermann/parrot">Parrot</a>, a Rust utility for Hyprland.</p>
-                <p>The repository is called Parrot; the executable is <code>hypr-speak</code>. Its default shortcut is <code>Alt+Escape</code>. Speech runs locally, using either espeak-ng or an optional Piper neural voice.</p>
+                <p>The project and executable are both called <code>parrot</code>. Its default shortcut is <code>Alt+Escape</code>. Speech runs locally, using either espeak-ng or an optional Piper neural voice.</p>
 
                 <h2>First, hear it</h2>
                 <figure class="article-figure">
@@ -93,7 +93,7 @@ cd parrot
                 <p>For the neural voice used in the demo:</p>
                 <pre><code>./install.sh --voice en_US-lessac-medium</code></pre>
                 <p>You can also generate audio without opening the overlay or reading the clipboard:</p>
-                <pre><code>hypr-speak --engine piper --text "Hello from Parrot" --wav demo.wav</code></pre>
+                <pre><code>parrot --engine piper --text "Hello from Parrot" --wav demo.wav</code></pre>
                 <p>Linux distribution compatibility and desktop compatibility are separate questions here. The README includes Ubuntu/Debian build dependencies, but selection capture requires Wayland data-control protocols. Hyprland is the intended desktop; GNOME, KDE, and X11 selection capture are not currently supported or verified. Headless WAV rendering avoids that desktop dependency.</p>
 
                 <h2>What comes next</h2>
