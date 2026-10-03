@@ -26,8 +26,14 @@ Visit `https://localhost:3443` (accepts self-signed certificate warning)
 - CSS3 (Flexbox, Grid)
 - Vanilla JavaScript
 - Font Awesome
-- Google Fonts (Inter)
+- System fonts (no external font download)
 
 ## License
 
 This project is open source and available for personal use.
+
+## Design and preview
+
+The redesign plan is in [DESIGN.md](DESIGN.md), with a pre-implementation [homepage mockup](design/home-mockup.svg). The homepage, blog and article share `css/style.css` and `js/script.js`.
+
+For a lightweight local preview, run `python3 -m http.server 8765` and visit `http://localhost:8765`. No build step is required.

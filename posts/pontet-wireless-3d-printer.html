@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My 3D printer cannot receive files over LAN or Wi-Fi. Pontet uses a Raspberry Pi to bridge wireless file transfers and USB storage.">
+    <meta name="author" content="Rafael Zimmermann">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Pontet: Getting Files to My 3D Printer over Wi-Fi">
+    <meta property="og:description" content="My 3D printer cannot receive files over LAN or Wi-Fi. Pontet uses a Raspberry Pi to bridge wireless file transfers and USB storage.">
+    <meta property="og:url" content="https://rafaelzimmermann.com/posts/pontet-wireless-3d-printer.html">
+    <link rel="canonical" href="https://rafaelzimmermann.com/posts/pontet-wireless-3d-printer.html">
+    <title>Pontet: Getting Files to My 3D Printer over Wi-Fi - Rafael Zimmermann</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Navigation -->
+    <nav id="navbar" aria-label="Main navigation">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+
+    <main class="main-content" id="main">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
+            <header class="article-header">
+                <h1>Pontet: Getting Files to My 3D Printer over Wi-Fi</h1>
+                <div class="article-meta">
+                    <time class="post-date" datetime="2026-04-04">April 4, 2026</time>
+                    <span class="post-reading-time">2 min read</span>
+                </div>
+            </header>
+            <div class="article-content">
+
+<p>My 3D printer does not support file transfers over LAN or Wi-Fi. I wrote Pontet to work around that limitation.</p>
+<p>The idea is to put a Raspberry Pi Zero W between my network and the printer. I mounted a shared directory from my NAS on the Pi, so I can just drop a print file into that folder. The Pi syncs it to the USB storage the printer sees.</p>
+<h2>How it works</h2>
+<figure class="article-figure">
+    <img src="/assets/images/pontet-diagram.svg" alt="Drop a file into a shared NAS folder. A Raspberry Pi Zero W running Pontet reads the folder over Wi-Fi using SMB and syncs it to USB storage for the 3D printer." width="480" height="344">
+    <figcaption>Drop a file into the NAS folder; Pontet syncs it to the printer’s USB storage.</figcaption>
+</figure>
+<p>Pontet uses Linux USB gadget mode to present a disk image as a USB mass-storage device. From the printer’s side, the interface is still USB. The networking happens on the Pi.</p>
+<p>My setup uses an SMB share on the NAS as the source directory. I do not need to copy files directly to the Pi: I save them in the shared folder. Pontet also supports copying files to a local directory on the Pi using SCP if you do not have a NAS.</p>
+<h2>What happens when a file arrives</h2>
+<p>A watcher checks the shared directory every 30 seconds. When it detects a change, a sync script detaches the USB gadget, updates the FAT32 disk image, and reattaches it.</p>
+<p>The printer sees a USB drive that is refreshed periodically. The drive briefly disconnects during a sync. Transfers should therefore happen while the printer is not reading from it, rather than during an active print.</p>
+<h2>Setup</h2>
+<p>The repository includes an image-flashing script and an Ansible playbook for configuring the Pi. The latest fix deals with Wi-Fi radio initialization during provisioning: having network credentials written to disk is not enough if the radio is still blocked.</p>
+<p>I drop a print file into the NAS folder. Pontet syncs it, and I can select the file on the 3D printer and start printing.</p>
+
+
+                <p><a class="cta-button" href="https://github.com/rafaelzimmermann/pontet" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> View Pontet on GitHub</a></p>
+            </div>
+        </article>
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="/js/script.js?v=20261002"></script>
+</body>
+</html>

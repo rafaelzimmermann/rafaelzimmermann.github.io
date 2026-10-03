@@ -12,14 +12,14 @@
     <title>Parrot: Giving My Linux Desktop a Voice - Rafael Zimmermann</title>
     <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css?v=20260302">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
 </head>
 <body>
-    <nav id="navbar">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <nav id="navbar" aria-label="Main navigation">
         <div class="nav-header">
-            <a href="/index.html#header" class="nav-logo"></a>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu"><span></span><span></span><span></span></button>
         </div>
         <ul class="nav-menu" id="navMenu">
             <li><a href="/index.html#about" class="nav-link">About</a></li>
@@ -35,7 +35,7 @@
             <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub"><i class="fab fa-github"></i></a>
         </div>
     </nav>
-    <div class="main-content">
+    <main class="main-content" id="main">
         <article class="article-container">
             <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
             <header class="article-header">
@@ -102,7 +102,7 @@ cd parrot
             </div>
         </article>
         <footer class="footer"><div class="container"><p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p></div></footer>
-    </div>
-    <script src="/js/script.js?v=20260302"></script>
+    </main>
+    <script src="/js/script.js?v=20261002"></script>
 </body>
 </html>

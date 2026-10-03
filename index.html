@@ -17,23 +17,22 @@
     <title>Rafael Zimmermann - Senior Software Engineer</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="/css/style.css?v=20260302">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <!-- Navigation -->
-    <nav id="navbar">
+    <nav id="navbar" aria-label="Main navigation">
         <div class="nav-header">
-            <a href="#header" class="nav-logo"></a>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <a href="#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -48,43 +47,53 @@
             <li><a href="blog.html" class="nav-link"><i class="fas fa-pen"></i> Blog</a></li>
         </ul>
         <div class="nav-footer">
-            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
                 <i class="fas fa-envelope"></i>
             </a>
-            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn">
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
                 <i class="fab fa-linkedin"></i>
             </a>
-            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub">
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
                 <i class="fab fa-github"></i>
             </a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content">
+    <main class="main-content" id="main">
         <!-- Header Section -->
         <header id="header" class="section">
-            <div class="header-overlay">
-                <div class="container">
-                    <div class="header-content">
-                        <h1 class="name">Rafael Zimmermann</h1>
-                        <p class="title">Senior Software Engineer at Shopify</p>
-                        <p class="location"><i class="fas fa-map-marker-alt"></i> Valencia, Spain</p>
+            <div class="container hero-grid">
+                <div class="header-content">
+                    <p class="eyebrow">Software engineer / Valencia, Spain</p>
+                    <h1 class="name">Rafael<br>Zimmermann<span>.</span></h1>
+                    <p class="hero-thesis">Distributed systems.<br>Data in motion.</p>
+                    <p class="title">Senior Software Engineer at Shopify. Building reliable streaming pipelines and backend systems.</p>
+                    <div class="hero-actions">
+                        <a href="#experience" class="button-primary">Explore experience <span aria-hidden="true">↘</span></a>
+                        <a href="#contact" class="button-link">Get in touch <span aria-hidden="true">↗</span></a>
                     </div>
                 </div>
+                <figure class="hero-portrait">
+                    <img src="/assets/images/rafael-optimized.jpg" alt="Rafael Zimmermann" width="400" height="400" fetchpriority="high">
+                    <figcaption>Streaming / Systems / Cloud</figcaption>
+                </figure>
             </div>
         </header>
 
         <!-- About Section -->
     <section id="about" class="section">
         <div class="container">
-            <h2 class="section-title">About Me</h2>
+            <h2 class="section-title">About</h2>
             <div class="about-content">
                 <p class="about-text">
                     Software developer with more than <span id="total-experience">15 years</span> of experience specializing in data streaming and distributed systems. Expert in building high-performance, scalable data pipelines using Apache Kafka and Apache Flink across multiple leading technology companies.
                 </p>
                 <p class="about-text">
-                    Strong foundation in designing and implementing highly available distributed APIs. Proficient in cloud-native architectures with deep expertise in Linux, Kubernetes, and Terraform. Passionate about building robust backend systems that process data at scale.
+                    My daily work centers on Apache Kafka, Apache Flink, Kubernetes, and BigQuery: building streaming data pipelines and the infrastructure behind them.
+                </p>
+                <p class="about-text">
+                    I use Claude, Codex, and Pi in my daily development workflow. Outside work, I build web applications that integrate AI, exploring how these capabilities can become useful product features.
                 </p>
                 <div class="specialties">
                     <h3>Core Specialties</h3>
@@ -92,17 +101,8 @@
                         <span class="tag">Apache Kafka</span>
                         <span class="tag">Apache Flink</span>
                         <span class="tag">Data Streaming</span>
-                        <span class="tag">Distributed Systems</span>
-                        <span class="tag">Java</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Go</span>
                         <span class="tag">Kubernetes</span>
-                        <span class="tag">Terraform</span>
-                        <span class="tag">Linux</span>
-                        <span class="tag">Redis</span>
-                        <span class="tag">BigTable</span>
-                        <span class="tag">GCP</span>
-                        <span class="tag">AWS</span>
+                        <span class="tag">BigQuery</span>
                     </div>
                 </div>
             </div>
@@ -137,16 +137,23 @@
                                 <span class="role-date">Feb 2022 - Present (<span id="shopify-role-duration">2 years 11 months</span>)</span>
                             </div>
                             <p class="description">
-                                Working on the Measurement team developing high-performance streaming data pipelines for marketing attribution. Building and maintaining Flink pipelines that process merchant marketing data in near real-time, enabling data-driven advertising decisions.
+                                Working on the Measurement team, building and maintaining streaming data pipelines for marketing attribution. Using Apache Kafka, Apache Flink, Kubernetes, and BigQuery to process merchant marketing data and support near real-time advertising insights.
+                            </p>
+                            <p class="description">
+                                Using Claude, Codex, and Pi as part of my daily development workflow to support implementation and iteration.
                             </p>
                             <div class="tech-stack">
+                                <span class="tech-tag">Apache Kafka</span>
                                 <span class="tech-tag">Apache Flink</span>
-                                <span class="tech-tag">Kafka</span>
+                                <span class="tech-tag">Data Streaming</span>
+                                <span class="tech-tag">Kubernetes</span>
+                                <span class="tech-tag">BigQuery</span>
                                 <span class="tech-tag">Scala</span>
                                 <span class="tech-tag">Java</span>
                                 <span class="tech-tag">Ruby (Rails)</span>
-                                <span class="tech-tag">Data Pipelines</span>
-                                <span class="tech-tag">Real-time Processing</span>
+                                <span class="tech-tag">Claude</span>
+                                <span class="tech-tag">Codex</span>
+                                <span class="tech-tag">Pi</span>
                             </div>
                         </div>
                     </div>
@@ -603,6 +610,19 @@
         </div>
     </section>
 
+    <section id="writing" class="section">
+        <div class="container">
+            <h2 class="section-title">From the notebook</h2>
+            <a class="post-card featured-post" href="/posts/app-launcher-rust.html">
+                <div><p class="eyebrow">Rust / Linux · March 11, 2026 · 9 min read</p>
+                <h3>I didn’t like app launchers for Arch Linux.<br>So I wrote my own in Rust.</h3>
+                <p class="post-excerpt">Building Trebuchet, a minimal app launcher, and what I learned along the way.</p>
+                <span class="post-read-more">Read the story <span aria-hidden="true">↗</span></span></div>
+                <img src="/assets/images/trebuchet-screenshot.png" alt="Trebuchet app launcher interface" width="480" height="300" loading="lazy">
+            </a>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="section">
         <div class="container">
@@ -626,11 +646,11 @@
                         <p>Connect with me</p>
                     </a>
 
-                    <div class="contact-card fade-in">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h3>Location</h3>
-                        <p>Valencia, Spain</p>
-                    </div>
+                    <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="contact-card">
+                        <i class="fab fa-github" aria-hidden="true"></i>
+                        <h3>GitHub</h3>
+                        <p>Explore my code and projects</p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -639,11 +659,11 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
-                <p>&copy; 2025 Rafael Zimmermann. All rights reserved.</p>
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
             </div>
         </footer>
-    </div>
+    </main>
 
-    <script src="/js/script.js?v=20260302"></script>
+    <script src="/js/script.js?v=20261002"></script>
 </body>
 </html>

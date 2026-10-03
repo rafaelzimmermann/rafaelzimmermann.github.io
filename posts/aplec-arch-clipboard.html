@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A small clipboard history tool for my Arch Linux and Hyprland setup: a background daemon, a popup, and keyboard navigation.">
+    <meta name="author" content="Rafael Zimmermann">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Aplec: A Simple Clipboard Manager for My Arch Linux Setup">
+    <meta property="og:description" content="A small clipboard history tool for my Arch Linux and Hyprland setup: a background daemon, a popup, and keyboard navigation.">
+    <meta property="og:url" content="https://rafaelzimmermann.com/posts/aplec-arch-clipboard.html">
+    <link rel="canonical" href="https://rafaelzimmermann.com/posts/aplec-arch-clipboard.html">
+    <title>Aplec: A Simple Clipboard Manager for My Arch Linux Setup - Rafael Zimmermann</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Navigation -->
+    <nav id="navbar" aria-label="Main navigation">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+
+    <main class="main-content" id="main">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
+            <header class="article-header">
+                <h1>Aplec: A Simple Clipboard Manager for My Arch Linux Setup</h1>
+                <div class="article-meta">
+                    <time class="post-date" datetime="2026-03-31">March 31, 2026</time>
+                    <span class="post-reading-time">2 min read</span>
+                </div>
+            </header>
+            <div class="article-content">
+
+<p>Aplec is a simple clipboard manager I wrote for my Arch Linux setup. It keeps a short history of copied text and gives me a keyboard-driven way to retrieve it.</p>
+<p>The interaction is small: open the popup, move through previous entries, press Enter to copy one back to the clipboard, then paste it where it belongs. Escape closes the popup without changing the clipboard.</p>
+<h2>Implementation</h2>
+<p>A background daemon polls <code>wl-paste</code> every 500 milliseconds, deduplicates entries, and keeps the last 50 in a history file. The popup reads that file when it opens and uses <code>wl-copy</code> to restore the selected entry.</p>
+<p>Aplec targets Wayland compositors with the layer-shell and data-control support it needs. My setup uses Hyprland. The project is written in Rust and relies on <code>wl-clipboard</code> for clipboard access.</p>
+<p>The popup’s placement and colours are configurable.</p>
+<h2>Local history</h2>
+<p>The history persists on disk, so it survives the popup closing. That also means copied text can remain there after it leaves the active clipboard.</p>
+<p>The history file uses owner-only permissions. That limits access by other users on the machine, but it does not make the contents encrypted or turn the tool into a password manager.</p>
+<h2>A recent startup fix</h2>
+<p>A recent Hyprland upgrade exposed an assumption in the service setup. The daemon was attached to <code>graphical-session.target</code>, but the <code>start-hyprland</code> launcher did not activate that target. The clipboard history stopped updating.</p>
+<p>The fix moved the service to <code>default.target</code> and made the daemon discover the Wayland socket as it runs. This lets it cope with the compositor environment becoming available after the service starts.</p>
+
+
+                <p><a class="cta-button" href="https://github.com/rafaelzimmermann/aplec" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> View Aplec on GitHub</a></p>
+            </div>
+        </article>
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="/js/script.js?v=20261002"></script>
+</body>
+</html>
