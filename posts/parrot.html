@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Building Parrot, an offline speak-selection utility for Hyprland in Rust, with Piper voices and a small playback overlay.">
+    <meta name="author" content="Rafael Zimmermann">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Parrot: Giving My Linux Desktop a Voice">
+    <meta property="og:description" content="Highlight text, press a shortcut, and listen. Building a small Rust utility with local speech synthesis, then reviewing what it takes to share it.">
+    <meta property="og:url" content="https://rafaelzimmermann.com/posts/parrot.html">
+    <title>Parrot: Giving My Linux Desktop a Voice - Rafael Zimmermann</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=20260302">
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo"></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email"><i class="fas fa-envelope"></i></a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+    </nav>
+    <div class="main-content">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+            <header class="article-header">
+                <h1>Parrot: Giving My Linux Desktop a Voice</h1>
+                <div class="article-meta">
+                    <span class="post-date"><i class="far fa-calendar"></i> <time datetime="2026-10-03">October 3, 2026</time></span>
+                    <span class="post-reading-time"><i class="far fa-clock"></i> 5 min read</span>
+                </div>
+            </header>
+            <div class="article-content">
+                <p>The interaction I wanted was small: highlight some text, press a shortcut, and have the computer read it aloud. A little window should let me pause or change the speed, then disappear when it finishes. That became <a href="https://github.com/rafaelzimmermann/parrot">Parrot</a>, a Rust utility for Hyprland.</p>
+                <p>The repository is called Parrot; the executable is <code>hypr-speak</code>. Its default shortcut is <code>Alt+Escape</code>. Speech runs locally, using either espeak-ng or an optional Piper neural voice.</p>
+
+                <h2>First, hear it</h2>
+                <figure class="article-figure">
+                    <audio controls preload="none" aria-label="Parrot neural voice demonstration">
+                        <source src="/assets/audio/parrot-demo.wav" type="audio/wav">
+                        <a href="/assets/audio/parrot-demo.wav">Download the Parrot voice demo</a>.
+                    </audio>
+                    <figcaption>About 11 seconds of Piper's en_US-lessac-medium voice, generated through Parrot's WAV export at normal speed.</figcaption>
+                </figure>
+                <p><a href="/assets/audio/parrot-demo.wav">Download the audio</a>. Transcript: “Hello! I am Parrot. Highlight some text, press your shortcut, and I will read it aloud. Pause whenever you like, or change the speaking speed. Your words stay on your computer.”</p>
+                <p>This is synthesized output from the application. Voice installation downloads the engine and model first; once installed, synthesis happens on the computer. The model's provenance is linked in the repository's <a href="https://github.com/rafaelzimmermann/parrot/blob/main/docs/voice-demo.md">demo notes</a>.</p>
+
+                <h2>A small pipeline with two speech engines</h2>
+                <p>Parrot reads Wayland's primary selection, falling back to the regular clipboard. It cleans the text, limits its length, and divides it into chunks. A worker synthesizes those chunks into PCM audio, rodio handles playback, and an egui overlay provides the controls.</p>
+                <p>The boundaries are deliberately simple. Selection handling does not need to know which voice is speaking. Playback receives samples and a sample rate. Both speech engines implement the same <code>TtsEngine</code> interface, so the UI does not have to know whether the audio came from a C library or a subprocess.</p>
+                <p>espeak-ng is the compact option: the application calls its system library through Rust's foreign-function interface. It is intelligible and has a distinctly synthetic voice. Piper provides the neural option, using a separate executable and an ONNX model. The demo above uses Piper.</p>
+                <p>That choice has a cost. The current Piper backend starts a process for each sentence, which can introduce gaps. Keeping an engine alive is a possible improvement, but it adds a longer-lived process and a more involved cancellation story. For this first version, the simpler boundary made the implementation easier to inspect.</p>
+                <p>Speed control changes synthesis parameters instead of accelerating already-generated audio. When the speed changes, the current sentence restarts. The overlay closes automatically after playback ends, and Escape dismisses it immediately.</p>
+
+                <h2>The installer was part of the application</h2>
+                <p>A shortcut-driven utility depends on its desktop integration. The installer checks native dependencies, scans supported Hyprland configuration patterns for a conflicting shortcut, builds the release binary, and backs up the configuration before appending a binding and window rules.</p>
+                <p>One detail matters more than it looks: the binding uses the absolute executable path. A compositor's environment may have a different <code>PATH</code> from an interactive shell. A command that works in a terminal can otherwise fail when launched by a shortcut.</p>
+                <p>The installer also handles classic configuration files and a supported native Lua configuration form. That is still a limited parser. Arbitrary Lua expressions, includes, and more complicated configuration arrangements need further work. The review records those limits rather than treating a few successful fixtures as proof that every configuration is covered.</p>
+                <p>And, because a project called Parrot should at least contain a parrot, the installer now prints a small ASCII bird.</p>
+
+                <h2>The useful part of the review</h2>
+                <p>Before sharing the repository, I asked for an architecture and code-quality review, fixes, and a written progress record. Several findings were more interesting than cosmetic cleanup.</p>
+                <ul>
+                    <li><strong>Global state needs an enforced owner.</strong> espeak-ng has process-global state. A worker convention alone did not stop callers from constructing two engines. An atomic ownership gate now rejects a second active instance.</li>
+                    <li><strong>A dry run must avoid writes.</strong> The installer previously still invoked the build during a dry run. That path now skips building and does not require an existing release binary.</li>
+                    <li><strong>Clipboard input needs a boundary.</strong> Reading arbitrary MIME data into an unbounded buffer was unnecessary. The reader now requests text and caps the bytes it consumes.</li>
+                    <li><strong>Playback outlives synthesis.</strong> The worker could exit after queueing the last sentence, making later speed restarts ineffective. It now stays available during final playback and advances the sentence display with playback sequencing.</li>
+                </ul>
+                <p>The installer review also found malformed generated Lua and shortcut comparisons that depended on modifier order. The regression checks now parse generated Lua and verify that reordering modifiers cannot hide a conflict.</p>
+                <p>The local verification finished with 36 passing Rust tests, 41 installer checks, a successful release build, and clean formatting and strict Clippy checks. An Ubuntu CI workflow is included. Those checks are useful evidence, while live desktop testing and broader configuration coverage remain on the release checklist.</p>
+
+                <h2>Try it on Hyprland</h2>
+                <p>You need Rust 1.92 or newer and the native development dependencies listed in the README. From there:</p>
+                <pre><code>git clone https://github.com/rafaelzimmermann/parrot.git
+cd parrot
+./install.sh --dry-run
+./install.sh</code></pre>
+                <p>For the neural voice used in the demo:</p>
+                <pre><code>./install.sh --voice en_US-lessac-medium</code></pre>
+                <p>You can also generate audio without opening the overlay or reading the clipboard:</p>
+                <pre><code>hypr-speak --engine piper --text "Hello from Parrot" --wav demo.wav</code></pre>
+                <p>Linux distribution compatibility and desktop compatibility are separate questions here. The README includes Ubuntu/Debian build dependencies, but selection capture requires Wayland data-control protocols. Hyprland is the intended desktop; GNOME, KDE, and X11 selection capture are not currently supported or verified. Headless WAV rendering avoids that desktop dependency.</p>
+
+                <h2>What comes next</h2>
+                <p>Parrot is an early release. The remaining work includes live playback validation, stronger config parsing, verified download checksums, subprocess cancellation, and more distribution testing. Those items live in the <a href="https://github.com/rafaelzimmermann/parrot/blob/main/docs/REVIEW.md">review and release checklist</a>.</p>
+                <p>The source is available under the MIT license at <a href="https://github.com/rafaelzimmermann/parrot">github.com/rafaelzimmermann/parrot</a>. If you try it, a report with your compositor version, speech engine, and the command that failed would be especially useful.</p>
+            </div>
+        </article>
+        <footer class="footer"><div class="container"><p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p></div></footer>
+    </div>
+    <script src="/js/script.js?v=20260302"></script>
+</body>
+</html>
