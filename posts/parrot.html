@@ -61,7 +61,13 @@
                 <p>This is synthesized output from the application. Voice installation downloads the engine and model first; once installed, synthesis happens on the computer. The model's provenance is linked in the repository's <a href="https://github.com/rafaelzimmermann/parrot/blob/main/docs/voice-demo.md">demo notes</a>.</p>
 
                 <h2>A small pipeline with two speech engines</h2>
-                <p>Parrot reads Wayland's primary selection, falling back to the regular clipboard. It cleans the text, limits its length, and divides it into chunks. A worker synthesizes those chunks into PCM audio, rodio handles playback, and an egui overlay provides the controls.</p>
+                <p>Parrot accepts a quoted text argument or piped input. Without either, it reads Wayland's primary selection, falling back to the regular clipboard. It cleans the text, limits its length, and divides it into chunks. A worker synthesizes those chunks into PCM audio, rodio handles playback, and an egui overlay provides the controls.</p>
+                <figure class="article-figure">
+                    <a href="/assets/images/parrot-architecture.svg" aria-label="Open Parrot architecture diagram at full size">
+                        <img src="/assets/images/parrot-architecture.svg" width="640" height="910" loading="lazy" style="width:100%;height:auto;max-width:640px;" alt="Parrot flow: positional text, stdin, or Wayland selection is cleaned and split, synthesized with espeak-ng or Piper, and played by rodio. The egui overlay controls playback and speed restarts. WAV export bypasses the UI and audio device.">
+                    </a>
+                    <figcaption>Input, synthesis, and playback are separate. The overlay sends playback controls and restart requests; headless mode writes the same PCM output to a WAV file. Select the diagram to view it at full size.</figcaption>
+                </figure>
                 <p>The boundaries are deliberately simple. Selection handling does not need to know which voice is speaking. Playback receives samples and a sample rate. Both speech engines implement the same <code>TtsEngine</code> interface, so the UI does not have to know whether the audio came from a C library or a subprocess.</p>
                 <p>espeak-ng is the compact option: the application calls its system library through Rust's foreign-function interface. It is intelligible and has a distinctly synthetic voice. Piper provides the neural option, using a separate executable and an ONNX model. The demo above uses Piper.</p>
                 <p>That choice has a cost. The current Piper backend starts a process for each sentence, which can introduce gaps. Keeping an engine alive is a possible improvement, but it adds a longer-lived process and a more involved cancellation story. For this first version, the simpler boundary made the implementation easier to inspect.</p>
@@ -93,7 +99,8 @@ cd parrot
                 <p>For the neural voice used in the demo:</p>
                 <pre><code>./install.sh --voice en_US-lessac-medium</code></pre>
                 <p>You can also generate audio without opening the overlay or reading the clipboard:</p>
-                <pre><code>parrot --engine piper --text "Hello from Parrot" --wav demo.wav</code></pre>
+                <pre><code>parrot --engine piper "Hello from Parrot" --wav demo.wav
+cat article.txt | parrot</code></pre>
                 <p>Linux distribution compatibility and desktop compatibility are separate questions here. The README includes Ubuntu/Debian build dependencies, but selection capture requires Wayland data-control protocols. Hyprland is the intended desktop; GNOME, KDE, and X11 selection capture are not currently supported or verified. Headless WAV rendering avoids that desktop dependency.</p>
 
                 <h2>What comes next</h2>

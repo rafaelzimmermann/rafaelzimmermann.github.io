@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="910" viewBox="0 0 640 910" role="img" aria-labelledby="title desc">
+  <title id="title">Parrot architecture: text to local speech</title>
+  <desc id="desc">Input priority is positional text, piped or redirected standard input, then Wayland selection with clipboard fallback. Text is cleaned, capped and split into sentences. In desktop mode a worker synthesizes one sentence at a time using either espeak-ng through FFI or a Piper subprocess and model. PCM samples go to rodio playback. An egui overlay receives worker events, controls pause and resume, and requests speed restarts. WAV mode synthesizes directly to a file without the overlay or audio device.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#2457c5"/></marker>
+  </defs>
+  <rect width="640" height="910" rx="12" fill="#eaf0f7"/>
+  <g font-family="system-ui, sans-serif" fill="#172b44">
+    <text x="28" y="40" font-size="24" font-weight="700">Parrot / text to speech</text>
+    <text x="28" y="65" font-size="15" fill="#52647b">Local synthesis · desktop playback or headless export</text>
+    <g fill="#fff" stroke="#d6dfea">
+      <rect x="28" y="88" width="584" height="112" rx="8"/>
+      <rect x="28" y="236" width="584" height="78" rx="8"/>
+      <rect x="28" y="350" width="584" height="194" rx="8"/>
+      <rect x="48" y="408" width="260" height="78" rx="6"/>
+      <rect x="332" y="408" width="260" height="78" rx="6"/>
+      <rect x="28" y="602" width="584" height="78" rx="8"/>
+      <rect x="28" y="716" width="584" height="100" rx="8"/>
+    </g>
+    <g font-size="19" font-weight="650">
+      <text x="48" y="117">1. Choose input</text>
+      <text x="48" y="266">2. Prepare text</text>
+      <text x="48" y="380">3. Synthesize through TtsEngine</text>
+      <text x="64" y="438">espeak-ng</text>
+      <text x="348" y="438">Piper</text>
+      <text x="48" y="632">4. Play audio / rodio</text>
+      <text x="48" y="746">5. Control playback / egui</text>
+    </g>
+    <g font-size="16" fill="#52647b">
+      <text x="48" y="146">Quoted argument → stdin → selection → clipboard</text>
+      <text x="48" y="176">Use the first applicable source; explicit empty input exits.</text>
+      <text x="48" y="295">Clean · limit length · split into sentence chunks</text>
+      <text x="64" y="466">In-process C library (FFI)</text>
+      <text x="348" y="466">Subprocess + ONNX model</text>
+      <text x="48" y="520">Desktop worker owns the engine and handles restarts.</text>
+      <text x="48" y="661">PCM samples → shared player → audio device</text>
+      <text x="48" y="775">Worker events → sentence display and completion</text>
+      <text x="48" y="799">Pause/resume → player · speed restart → worker</text>
+    </g>
+    <g fill="none" stroke="#2457c5" stroke-width="2.5" marker-end="url(#arrow)">
+      <path d="M320 203V232"/>
+      <path d="M320 317V346"/>
+      <path d="M320 547V598"/>
+    </g>
+    <text x="338" y="577" font-size="15" fill="#2457c5">PCM16 mono</text>
+    <path d="M320 683V712" fill="none" stroke="#52647b" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="28" y="852" font-size="17" font-weight="650">Headless alternative: --wav output.wav</text>
+    <text x="28" y="880" font-size="16" fill="#52647b">Prepared text → engine → WAV file. No UI or audio device.</text>
+  </g>
+</svg>
