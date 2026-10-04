@@ -7,7 +7,7 @@
     <meta name="author" content="Rafael Zimmermann">
     <meta property="og:type" content="article">
     <meta property="og:title" content="Parrot: Giving My Linux Desktop a Voice">
-    <meta property="og:description" content="Highlight text, press a shortcut, and listen. Building a small Rust utility with local speech synthesis, then reviewing what it takes to share it.">
+    <meta property="og:description" content="Highlight text, press a shortcut, and listen. Parrot connects local speech synthesis to a small playback overlay on Hyprland.">
     <meta property="og:url" content="https://rafaelzimmermann.com/posts/parrot.html">
     <title>Parrot: Giving My Linux Desktop a Voice - Rafael Zimmermann</title>
     <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
@@ -76,19 +76,17 @@
                 <h2>The installer was part of the application</h2>
                 <p>A shortcut-driven utility depends on its desktop integration. The installer checks native dependencies, scans supported Hyprland configuration patterns for a conflicting shortcut, builds the release binary, and backs up the configuration before appending a binding and window rules.</p>
                 <p>One detail matters more than it looks: the binding uses the absolute executable path. A compositor's environment may have a different <code>PATH</code> from an interactive shell. A command that works in a terminal can otherwise fail when launched by a shortcut.</p>
-                <p>The installer also handles classic configuration files and a supported native Lua configuration form. That is still a limited parser. Arbitrary Lua expressions, includes, and more complicated configuration arrangements need further work. The review records those limits rather than treating a few successful fixtures as proof that every configuration is covered.</p>
+                <p>The installer handles classic configuration files and a supported native Lua configuration form. Its parser covers common binding patterns; arbitrary Lua expressions, includes, and more complicated configuration arrangements need further work.</p>
                 <p>And, because a project called Parrot should at least contain a parrot, the installer now prints a small ASCII bird.</p>
 
-                <h2>The useful part of the review</h2>
-                <p>Before sharing the repository, I asked for an architecture and code-quality review, fixes, and a written progress record. Several findings were more interesting than cosmetic cleanup.</p>
+                <h2>State, input, and playback</h2>
+                <p>The synthesis engine, clipboard reader, and playback worker each have a different lifetime. Parrot keeps those boundaries explicit:</p>
                 <ul>
-                    <li><strong>Global state needs an enforced owner.</strong> espeak-ng has process-global state. A worker convention alone did not stop callers from constructing two engines. An atomic ownership gate now rejects a second active instance.</li>
-                    <li><strong>A dry run must avoid writes.</strong> The installer previously still invoked the build during a dry run. That path now skips building and does not require an existing release binary.</li>
-                    <li><strong>Clipboard input needs a boundary.</strong> Reading arbitrary MIME data into an unbounded buffer was unnecessary. The reader now requests text and caps the bytes it consumes.</li>
-                    <li><strong>Playback outlives synthesis.</strong> The worker could exit after queueing the last sentence, making later speed restarts ineffective. It now stays available during final playback and advances the sentence display with playback sequencing.</li>
+                    <li><strong>One espeak-ng owner.</strong> The library has process-global state. An atomic ownership gate rejects a second active instance, preventing two engines from using that state concurrently.</li>
+                    <li><strong>Bounded text input.</strong> The clipboard reader requests text and caps the bytes it consumes. Piped input is also bounded, and the text-processing stage limits the amount of text spoken in one invocation.</li>
+                    <li><strong>A worker that follows playback.</strong> Synthesis can finish before the audio does. The worker stays available during the final sentence so a speed change can still restart it, and it advances the displayed sentence with playback.</li>
                 </ul>
-                <p>The installer review also found malformed generated Lua and shortcut comparisons that depended on modifier order. The regression checks now parse generated Lua and verify that reordering modifiers cannot hide a conflict.</p>
-                <p>The local verification finished with 36 passing Rust tests, 41 installer checks, a successful release build, and clean formatting and strict Clippy checks. An Ubuntu CI workflow is included. Those checks are useful evidence, while live desktop testing and broader configuration coverage remain on the release checklist.</p>
+                <p>Installation has its own boundaries: <code>--dry-run</code> skips builds and configuration writes, while shortcut comparisons normalize modifier order. The same combination of keys is treated as a conflict regardless of how its modifiers are written.</p>
 
                 <h2>Try it on Hyprland</h2>
                 <p>You need Rust 1.92 or newer and the native development dependencies listed in the README. From there:</p>
@@ -99,8 +97,9 @@ cd parrot
                 <p>For the neural voice used in the demo:</p>
                 <pre><code>./install.sh --voice en_US-lessac-medium</code></pre>
                 <p>You can also generate audio without opening the overlay or reading the clipboard:</p>
-                <pre><code>parrot --engine piper "Hello from Parrot" --wav demo.wav
-cat article.txt | parrot</code></pre>
+                <pre><code>parrot --engine piper "Hello from Parrot" --wav demo.wav</code></pre>
+                <p>To speak a file through the playback overlay, pipe its contents into Parrot:</p>
+                <pre><code>cat article.txt | parrot</code></pre>
                 <p>Linux distribution compatibility and desktop compatibility are separate questions here. The README includes Ubuntu/Debian build dependencies, but selection capture requires Wayland data-control protocols. Hyprland is the intended desktop; GNOME, KDE, and X11 selection capture are not currently supported or verified. Headless WAV rendering avoids that desktop dependency.</p>
 
                 <h2>What comes next</h2>
