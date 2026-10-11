@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I wired Claude Code and OpenCode together into a /delegate skill — Claude plans, OpenCode executes. Includes the MCP server, Ollama config, and four gotchas that took time to debug.">
+    <meta name="author" content="Rafael Zimmermann">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Frankenstein's Monster: Wiring Claude Code and OpenCode Together">
+    <meta property="og:description" content="Claude plans. OpenCode executes. You drink coffee. How I wired Claude Code and OpenCode together into a /delegate skill — including the MCP server, Ollama config, and four gotchas that took real time to debug.">
+    <meta property="og:url" content="https://rafaelzimmermann.github.io/posts/frankenstein-claude-open-code-monster.html">
+
+    <title>Frankenstein's Monster: Wiring Claude Code and OpenCode Together - Rafael Zimmermann</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css?v=20260302">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo"></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Blog
+            </a>
+
+            <header class="article-header">
+                <h1>Frankenstein's Monster: Wiring Claude Code and OpenCode Together</h1>
+                <div class="article-meta">
+                    <span class="post-date"><i class="far fa-calendar"></i> March 2026</span>
+                    <span class="post-reading-time"><i class="far fa-clock"></i> 8 min read</span>
+                </div>
+            </header>
+
+            <div class="article-content">
+
+                <blockquote>
+                    <p>Claude plans. OpenCode executes. You drink coffee.</p>
+                </blockquote>
+
+                <h2>The Idea</h2>
+                <p>
+                    Claude Code is great at understanding context, decomposing problems, and reviewing code.
+                    OpenCode is great at hammering out implementations autonomously. What if you could use
+                    them together — Claude as the architect, OpenCode as the builder?
+                </p>
+                <p>
+                    That's what <code>/delegate</code> does. Type
+                    <code>/delegate refactor the auth module to use JWTs</code> and Claude will:
+                </p>
+                <ol>
+                    <li><strong>Plan</strong> — break the task into discrete subtasks and ask you to approve them</li>
+                    <li><strong>Delegate</strong> — run each subtask through OpenCode via an MCP tool</li>
+                    <li><strong>Review</strong> — read the diff, check for bugs and gaps, report back</li>
+                </ol>
+
+                <h2>How Claude Code Skills Work</h2>
+                <p>
+                    Claude Code has a skill system (formerly called "custom commands"). A skill is a directory
+                    with a <code>SKILL.md</code> file inside it. Skills live in:
+                </p>
+                <ul>
+                    <li><code>~/.claude/skills/&lt;name&gt;/SKILL.md</code> — personal, available across all projects</li>
+                    <li><code>.claude/skills/&lt;name&gt;/SKILL.md</code> — project-level</li>
+                </ul>
+                <p>
+                    The <code>SKILL.md</code> has a YAML frontmatter block followed by markdown instructions.
+                    When you type <code>/skill-name</code>, Claude reads those instructions and follows them.
+                    The <code>$ARGUMENTS</code> placeholder gets replaced with whatever you typed after the skill name.
+                </p>
+                <p>Key frontmatter fields used here:</p>
+<pre><code>disable-model-invocation: true   # only triggers when you explicitly type /delegate
+allowed-tools: mcp__run-local__run_local, Bash(git *), Read, Glob, Grep</code></pre>
+                <p>
+                    <code>disable-model-invocation: true</code> is important — it prevents Claude from
+                    auto-triggering the skill based on context. You want to be the one deciding when to hand
+                    off to OpenCode.
+                </p>
+                <p>
+                    <code>allowed-tools</code> scopes what Claude is allowed to do while running the skill.
+                    In this case: call the <code>run_local</code> MCP tool to invoke opencode, run git
+                    commands, and read files for the review phase. Claude can't write files itself — that's
+                    OpenCode's job.
+                </p>
+
+                <h2>The Skill File</h2>
+                <p><strong>Location:</strong> <code>~/.claude/skills/delegate/SKILL.md</code></p>
+<pre><code>---
+name: delegate
+description: Plan a task at a high level and delegate execution to opencode
+  via the run_local MCP tool, then review the results.
+disable-model-invocation: true
+allowed-tools: mcp__run-local__run_local, Bash(git *), Read, Glob, Grep
+---
+
+You are now in **delegate mode**. Your role is to orchestrate —
+you plan and review, opencode executes locally.
+
+## Arguments
+
+$ARGUMENTS
+
+Parse the arguments above:
+- If they start with `--model &lt;value&gt;` or `-m &lt;value&gt;`, extract that as the model to pass.
+- Otherwise, treat the full string as the task. No `--model` means use the default (ollama/qwen3:14b-32k).
+
+## Phase 1 — Plan
+
+Break the task into discrete, self-contained subtasks...
+[Present plan, wait for approval]
+
+## Phase 2 — Delegate
+
+mcp__run-local__run_local(
+  task="&lt;subtask description&gt;",
+  dir="&lt;working directory&gt;",
+  model="ollama/qwen3:14b-32k"
+)
+
+[Run sequentially, verify with git status after each, pause on failure]
+
+## Phase 3 — Review
+
+git diff, read changed files, report what was done and flag issues.</code></pre>
+                <p>
+                    The three-phase structure forces Claude to stop and get your sign-off before any code
+                    gets written. You see the plan, can edit it, and only then does the execution start.
+                </p>
+
+                <h2>Adding Ollama as an OpenCode Provider</h2>
+                <p>
+                    OpenCode uses <code>~/.config/opencode/opencode.json</code> for configuration. It supports
+                    any OpenAI-compatible endpoint via the <code>@ai-sdk/openai-compatible</code> package.
+                </p>
+                <p>
+                    Ollama exposes an OpenAI-compatible API at <code>http://localhost:11434/v1</code>, so
+                    adding it is straightforward:
+                </p>
+<pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen3:14b-32k": {
+          "name": "Qwen3 14B (32K ctx)",
+          "tools": true
+        }
+      }
+    }
+  }
+}</code></pre>
+                <p>
+                    Two things are required for tool calling to work with a local model: <code>"tools": true</code>
+                    in the model config, and a context window large enough for opencode's agentic prompts.
+                    Ollama defaults to 4K tokens, which is too small — tool calls start failing silently.
+                    The fix is to create a custom model variant with 32K context:
+                </p>
+<pre><code>curl -s -X POST http://localhost:11434/api/create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "qwen3:14b-32k", "from": "qwen3:14b", "parameters": {"num_ctx": 32768}}'</code></pre>
+                <p>
+                    Once configured, target the local model with <code>--model ollama/qwen3:14b-32k</code>.
+                    OpenCode will download the <code>@ai-sdk/openai-compatible</code> package on first use.
+                    The model running here is Qwen3 14B via a dockerized Ollama instance, exposed on port 11434.
+                </p>
+
+                <h2>Usage</h2>
+<pre><code># Delegate to opencode's default model
+/delegate add pagination to the /users endpoint
+
+# Delegate to local Qwen via Ollama
+/delegate --model ollama/qwen3:14b-32k add pagination to the /users endpoint</code></pre>
+                <p>
+                    Claude presents a numbered plan first. You can approve it, tweak it, or abort. After
+                    approval, Claude calls the <code>run_local</code> MCP tool for each subtask, then does
+                    a final review pass: reads the diff, checks correctness, and tells you if anything
+                    looks off.
+                </p>
+
+                <h2>The MCP Server</h2>
+                <p>
+                    The <code>run_local</code> tool is backed by a small Python MCP server at
+                    <code>~/.claude/mcp-servers/run-local/server.py</code>. It wraps <code>opencode run</code>
+                    and exposes it as a proper MCP tool.
+                </p>
+                <p>
+                    The full server is about 80 lines. The transport layer reads newline-delimited JSON
+                    from stdin and writes responses the same way:
+                </p>
+<pre><code>stdin  = sys.stdin.buffer
+stdout = sys.stdout.buffer
+
+def send(obj):
+    stdout.write(json.dumps(obj).encode() + b"\n")
+    stdout.flush()
+
+def main():
+    for raw_line in stdin:
+        msg = json.loads(raw_line.strip())
+        method = msg.get("method")
+        id     = msg.get("id")
+
+        if method == "initialize":
+            send({"jsonrpc": "2.0", "id": id, "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {"tools": {}},
+                "serverInfo": {"name": "run-local", "version": "1.0.0"},
+            }})
+        elif method == "tools/list":
+            send({"jsonrpc": "2.0", "id": id, "result": {"tools": TOOLS}})
+        elif method == "tools/call":
+            # ... dispatch to handle_run_local</code></pre>
+                <p>The <code>handle_run_local</code> function is straightforward:</p>
+<pre><code>def handle_run_local(args):
+    task  = args["task"]
+    cwd   = args.get("dir") or None
+    model = args.get("model") or "ollama/qwen3:14b-32k"
+
+    result = subprocess.run(
+        ["opencode", "run", "--model", model, task],
+        capture_output=True, stdin=subprocess.DEVNULL,
+        text=True, cwd=cwd, timeout=600,
+    )
+    return [{"type": "text", "text": result.stdout}]</code></pre>
+                <p>Register it once using the absolute Python path:</p>
+<pre><code>claude mcp add run-local -s user -- /usr/bin/python3 ~/.claude/mcp-servers/run-local/server.py</code></pre>
+                <p>
+                    This is the key architectural decision, and it's why the approach works where a
+                    plain skill didn't.
+                </p>
+
+                <h2>Gotchas That Led Here</h2>
+
+                <h3>1. The Background Execution Problem</h3>
+                <p>
+                    The first version of <code>/delegate</code> called <code>opencode run</code> directly
+                    via Claude's <code>Bash</code> tool. It worked most of the time, but had a recurring
+                    failure mode: Claude would occasionally run the command with
+                    <code>run_in_background: true</code>. When that happened, the output got a task ID
+                    instead of inline text, and the subsequent <code>TaskOutput</code> call would fail with:
+                </p>
+<pre><code>Error: Task ID is required
+Invalid tool parameters</code></pre>
+                <p>
+                    The obvious fix — adding "Never use <code>run_in_background</code>" to the skill
+                    instructions — reduced the frequency but didn't eliminate it. Prompt rules are hints,
+                    not constraints.
+                </p>
+                <p>
+                    The real fix was to stop using <code>Bash</code> for this entirely.
+                    <strong>MCP tools are always synchronous</strong> — there's no
+                    <code>run_in_background</code> parameter. When Claude calls
+                    <code>mcp__run-local__run_local</code>, it blocks until the server returns a response.
+                    The problem becomes structurally impossible.
+                </p>
+
+                <h3>2. The Wrong MCP Wire Format</h3>
+                <p>
+                    The first MCP server implementation used Content-Length framing — the same protocol
+                    as the Language Server Protocol:
+                </p>
+<pre><code>Content-Length: 160\r\n
+\r\n
+{"jsonrpc": "2.0", ...}</code></pre>
+                <p>
+                    It passed all manual tests but <code>claude mcp list</code> reported
+                    <code>✗ Failed to connect</code> every time.
+                </p>
+                <p>Adding a log file to the server revealed what Claude Code was actually sending:</p>
+<pre><code>logging.basicConfig(filename="/tmp/run-local-mcp.log", level=logging.DEBUG)
+
+# log output:
+# header line: b'{"method":"initialize","params":{"protocolVersion":"2025-11-25",...}}\n'</code></pre>
+                <p>
+                    Claude Code 2.1.81 uses <strong>newline-delimited JSON</strong> (one JSON object per line),
+                    not Content-Length framing. It also negotiates protocol version <code>2025-11-25</code>,
+                    not the older <code>2024-11-05</code>. The fix was switching the transport entirely —
+                    read lines, write lines, no framing headers. Without the log, this would have been
+                    very hard to diagnose.
+                </p>
+
+                <h3>3. The stdin Inheritance Problem</h3>
+                <p>
+                    After fixing the wire format, the server connected fine — but <code>run_local</code>
+                    calls would always time out after 300 seconds, even with Ollama warm and the model
+                    loaded. Running <code>opencode run</code> directly from the terminal worked instantly.
+                </p>
+                <p>
+                    The culprit: <code>subprocess.run</code> with no <code>stdin=</code> argument inherits
+                    the parent process's stdin. The MCP server's stdin is the JSON protocol pipe — the same
+                    stream Claude Code uses to send <code>tools/call</code> requests. When opencode launched
+                    as a subprocess, it inherited that pipe and sat there reading protocol messages instead
+                    of running the task. It never produced output, so it hung until the timeout killed it.
+                </p>
+<pre><code># Wrong — opencode inherits the MCP protocol pipe as its stdin
+result = subprocess.run(
+    ["opencode", "run", "--model", model, task],
+    capture_output=True, text=True, cwd=cwd, timeout=300,
+)
+
+# Fixed — opencode gets /dev/null as stdin, nothing to wait on
+result = subprocess.run(
+    ["opencode", "run", "--model", model, task],
+    capture_output=True, stdin=subprocess.DEVNULL,
+    text=True, cwd=cwd, timeout=300,
+)</code></pre>
+                <p>
+                    This is easy to miss because it only manifests when the parent process has a meaningful
+                    stdin. A quick manual test of the server — where stdin is a terminal — passes fine.
+                    The bug only bites in production, where stdin is a pipe.
+                </p>
+
+                <h3>4. The external_directory Permission Sandbox</h3>
+                <p>
+                    Even with the server fixed, writes to paths outside the working directory silently
+                    failed. The symptom looked like OpenCode ran successfully — no error, exit code 0 —
+                    but the file never appeared:
+                </p>
+<pre><code>! permission requested: external_directory (/tmp/*); auto-rejecting
+✗ write failed
+Error: PermissionRejectedError({"_tag":"PermissionRejectedError"})</code></pre>
+                <p>
+                    OpenCode sandboxes tool calls by default. Any path outside the directory where
+                    <code>opencode run</code> was started triggers an <code>external_directory</code>
+                    permission check, which defaults to auto-reject in non-interactive mode. Since the
+                    MCP server spawns opencode headlessly, there's no one to approve the prompt — it
+                    just silently fails.
+                </p>
+                <p>The fix is a one-time addition to <code>~/.config/opencode/opencode.json</code>:</p>
+<pre><code>{
+  "permission": {
+    "external_directory": {
+      "/**": "allow"
+    }
+  }
+}</code></pre>
+                <p>
+                    This tells OpenCode to allow all external paths without prompting. Scope it down if
+                    you want tighter control — e.g. <code>"/home/spike/workspace/**": "allow"</code> —
+                    but for a local dev setup the blanket allow is fine.
+                </p>
+
+                <h2>Why This Works</h2>
+                <p>
+                    OpenCode's <code>opencode run</code> command is the key — it runs the tool
+                    non-interactively with a single message, then exits. That makes it composable.
+                    Claude can call it in a loop, pass different prompts to each invocation, and
+                    collect results.
+                </p>
+                <p>
+                    Each <code>opencode run</code> call starts a fresh session, so every subtask message
+                    must be fully self-contained. Claude's planning phase handles this: the instructions
+                    explicitly say to write subtask descriptions that include file paths and enough context
+                    for OpenCode to act without history.
+                </p>
+                <p>
+                    Small subtasks also matter more than you'd expect. A prompt that says "implement the
+                    user auth flow, add the middleware, wire up the routes, and write tests" gives OpenCode
+                    too many things to juggle at once. One of them gets half-done. Split it into four
+                    subtasks and each one completes cleanly. The overhead of more invocations is worth it.
+                </p>
+                <p>
+                    The review phase closes the loop. Claude reads <code>git diff</code>, checks the
+                    changed files, and can catch things OpenCode missed — incomplete implementations,
+                    off-spec behavior, obvious bugs. If it finds issues, it asks whether to fix them
+                    directly or spin up another delegation round.
+                </p>
+
+                <h2>The Stack</h2>
+
+                <div class="table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Tool</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Orchestration</td>
+                            <td>Claude Code (claude-sonnet-4-6)</td>
+                            <td>Planning, delegation, review</td>
+                        </tr>
+                        <tr>
+                            <td>Bridge</td>
+                            <td>MCP server (<code>run-local</code>)</td>
+                            <td>Synchronous opencode wrapper</td>
+                        </tr>
+                        <tr>
+                            <td>Execution</td>
+                            <td>OpenCode 1.2.27</td>
+                            <td>Autonomous implementation</td>
+                        </tr>
+                        <tr>
+                            <td>Local inference</td>
+                            <td>Ollama + Qwen3 14B (32K ctx)</td>
+                            <td>Optional free/offline execution</td>
+                        </tr>
+                        <tr>
+                            <td>Skill system</td>
+                            <td><code>~/.claude/skills/delegate/</code></td>
+                            <td>Wires it all together</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <h2>Files Touched</h2>
+                <ul>
+                    <li><strong>Created:</strong> <code>~/.claude/skills/delegate/SKILL.md</code></li>
+                    <li><strong>Created:</strong> <code>~/.claude/mcp-servers/run-local/server.py</code></li>
+                    <li><strong>Modified:</strong> <code>~/.config/opencode/opencode.json</code> — added <code>ollama</code> provider block, added <code>permission.external_directory</code> allow rule</li>
+                </ul>
+
+            </div>
+
+            <div class="share-section">
+                <span class="share-label">Share</span>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Frafaelzimmermann.github.io%2Fposts%2Ffrankenstein-claude-open-code-monster.html"
+                   target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on LinkedIn">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="https://www.reddit.com/submit?url=https%3A%2F%2Frafaelzimmermann.github.io%2Fposts%2Ffrankenstein-claude-open-code-monster.html"
+                   target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on Reddit">
+                    <i class="fab fa-reddit"></i> Reddit
+                </a>
+            </div>
+        </article>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/js/script.js?v=20260302"></script>
+</body>
+</html>
