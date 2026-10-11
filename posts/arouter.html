@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="arouter is a quota-aware LLM router: request a quality grade instead of a model, and it picks from subscriptions, local engines, or budget-capped APIs.">
+    <meta name="author" content="Rafael Zimmermann">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="arouter: Pick a Grade, Not a Model">
+    <meta property="og:description" content="A small proxy between my tools and every LLM provider I use. Tools ask for A+, A, or B; arouter decides which model serves each request.">
+    <meta property="og:url" content="https://rafaelzimmermann.com/posts/arouter.html">
+    <link rel="canonical" href="https://rafaelzimmermann.com/posts/arouter.html">
+    <title>arouter: Pick a Grade, Not a Model - Rafael Zimmermann</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Navigation -->
+    <nav id="navbar" aria-label="Main navigation">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content" id="main">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
+            <header class="article-header">
+                <h1>arouter: Pick a Grade, Not a Model</h1>
+                <div class="article-meta">
+                    <time class="post-date" datetime="2026-10-11">October 11, 2026</time>
+                    <span class="post-reading-time">3 min read</span>
+                </div>
+            </header>
+            <div class="article-content">
+                <p>Model selection became a chore. I kept a mental map of which subscription quota resets when, repointed tools between providers when one ran dry, and occasionally burned pay-per-token keys because I forgot. So I wrote <a href="https://github.com/rafaelzimmermann/arouter">arouter</a>, a quota-aware router in Rust.</p>
+                <p>The idea is simple: my tools stop asking for a model and ask for a <em>grade</em> instead — <code>A+</code>, <code>A</code>, or <code>B</code>. arouter serves each request from whatever makes sense at that moment: the subscription with the healthiest quota, a warm local engine, or, only if I allow it, the cheapest paid API that fits the budget. Every response says where it went (<code>X-Arouter-Upstream</code>, <code>X-Arouter-Grade</code>).</p>
+                <p>It talks to upstreams for quota directly — OpenRouter's key endpoint, <code>x-ratelimit-*</code> headers from responses it already proxies, a 429 as ground truth — and scores providers accordingly. Windows about to reset enter drain mode, so expiring quota gets spent instead of wasted. On-demand APIs sit behind stacked spend guards (daily, monthly, pace, per-request caps — tightest wins), with atomic admission so concurrent requests cannot oversubscribe a cap. Failing models cool down; stalled upstreams hit deadlines and fail over.</p>
+                <p>Any OpenAI-compatible client works:</p>
+                <pre><code>./target/release/arouter serve --config config.example.toml  # 127.0.0.1:3929
+
+curl -s localhost:3929/v1/chat/completions \
+  -d '{"model":"A+","messages":[{"role":"user","content":"hi"}]}'</code></pre>
+                <p>Anthropic-wire clients like Claude Code work too, and there's an htop-style live monitor plus Prometheus metrics if you want to watch it decide.</p>
+                <p>I have been running it as my daily driver for everything. It is v0.1 — the routing logic is exercised by a black-box test rig, but it is still a young piece of software.</p>
+                <p><a class="cta-button" href="https://github.com/rafaelzimmermann/arouter" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> View arouter on GitHub</a></p>
+            </div>
+        </article>
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="/js/script.js?v=20261002"></script>
+</body>
+</html>

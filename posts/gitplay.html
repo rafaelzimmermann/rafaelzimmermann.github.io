@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="gitplay is a small terminal tool that streams working-tree changes as a rolling diff, useful for watching what a coding agent is doing.">
+    <meta name="author" content="Rafael Zimmermann">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="gitplay: Watching a Coding Agent Work">
+    <meta property="og:description" content="A rolling diff of whatever is happening in a repository, printed live in the terminal.">
+    <meta property="og:url" content="https://rafaelzimmermann.com/posts/gitplay.html">
+    <link rel="canonical" href="https://rafaelzimmermann.com/posts/gitplay.html">
+    <title>gitplay: Watching a Coding Agent Work - Rafael Zimmermann</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Navigation -->
+    <nav id="navbar" aria-label="Main navigation">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content" id="main">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
+            <header class="article-header">
+                <h1>gitplay: Watching a Coding Agent Work</h1>
+                <div class="article-meta">
+                    <time class="post-date" datetime="2026-10-11">October 11, 2026</time>
+                    <span class="post-reading-time">2 min read</span>
+                </div>
+            </header>
+            <div class="article-content">
+                <p>I run coding agents on my repositories, and I kept doing the same thing: switch to another terminal, run <code>git diff</code>, run it again, run it again. That is a poor way to follow an editing session that is still in progress.</p>
+                <p>So I wrote <a href="https://github.com/rafaelzimmermann/gitplay">gitplay</a>. It watches a repository's working tree and prints changes as a live, rolling diff in the terminal. Additions, deletions, and context scroll by as files change, commits show up with hash, branch, and subject, and a footer keeps the repository path and current branch visible. Press <code>q</code> to leave.</p>
+                <p>By default it shows each change since the last update; <code>--cumulative</code> switches to the full uncommitted change against <code>HEAD</code>. Debounce window, diff context, and display pace are adjustable. It respects <code>.gitignore</code> and <code>.git/info/exclude</code>, and skips hidden files, Git internals, editor temporaries, and anything that is not UTF-8.</p>
+                <p>It is a single Rust binary:</p>
+                <pre><code>git clone https://github.com/rafaelzimmermann/gitplay.git
+cd gitplay
+./install.sh
+
+gitplay            # from inside a repository
+gitplay /some/path # or pointed at one</code></pre>
+                <p>Nothing more to it than that. It does one thing: you point it at a path, and you can see what the agent is doing.</p>
+                <p><a class="cta-button" href="https://github.com/rafaelzimmermann/gitplay" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> View gitplay on GitHub</a></p>
+            </div>
+        </article>
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="/js/script.js?v=20261002"></script>
+</body>
+</html>
