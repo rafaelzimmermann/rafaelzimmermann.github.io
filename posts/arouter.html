@@ -6,6 +6,8 @@
     <meta name="description" content="arouter is a quota-aware LLM router: request a quality grade instead of a model, and it picks from subscriptions, local engines, or budget-capped APIs.">
     <meta name="author" content="Rafael Zimmermann">
     <meta property="og:type" content="article">
+    <meta property="og:image" content="https://rafaelzimmermann.com/assets/images/arouter-routing.svg">
+    <meta property="og:image:alt" content="Two requests through arouter: grade A+ is served by a subscription model, grade B by a local engine for free">
     <meta property="og:title" content="arouter: Pick a Grade, Not a Model">
     <meta property="og:description" content="A small proxy between my tools and every LLM provider I use. Tools ask for A+, A, or B; arouter decides which model serves each request.">
     <meta property="og:url" content="https://rafaelzimmermann.com/posts/arouter.html">
@@ -61,6 +63,10 @@
             <div class="article-content">
                 <p>Model selection became a chore. I kept a mental map of which subscription quota resets when, repointed tools between providers when one ran dry, and occasionally burned pay-per-token keys because I forgot. So I wrote <a href="https://github.com/rafaelzimmermann/arouter">arouter</a>, a quota-aware router in Rust.</p>
                 <p>The idea is simple: my tools stop asking for a model and ask for a <em>grade</em> instead — <code>A+</code>, <code>A</code>, or <code>B</code>. arouter serves each request from whatever makes sense at that moment: the subscription with the healthiest quota, a warm local engine, or, only if I allow it, the cheapest paid API that fits the budget. Every response says where it went (<code>X-Arouter-Upstream</code>, <code>X-Arouter-Grade</code>).</p>
+<figure class="article-figure">
+    <img src="/assets/images/arouter-routing.svg" alt="Diagram of two requests through arouter at the same time: grade A+ is served by glm-5.3 from subscription quota, grade B by a local qwen3.8 model for free" width="960" height="400" decoding="async">
+    <figcaption>Two requests at the same time. The A+ request lands on a subscription model with quota to burn; the B request on a local engine that costs nothing. Nobody picked those models — arouter did.</figcaption>
+</figure>
                 <p>It talks to upstreams for quota directly — OpenRouter's key endpoint, <code>x-ratelimit-*</code> headers from responses it already proxies, a 429 as ground truth — and scores providers accordingly. Windows about to reset enter drain mode, so expiring quota gets spent instead of wasted. On-demand APIs sit behind stacked spend guards (daily, monthly, pace, per-request caps — tightest wins), with atomic admission so concurrent requests cannot oversubscribe a cap. Failing models cool down; stalled upstreams hit deadlines and fail over.</p>
                 <p>Any OpenAI-compatible client works:</p>
                 <pre><code>./target/release/arouter serve --config config.example.toml  # 127.0.0.1:3929

@@ -6,6 +6,8 @@
     <meta name="description" content="aitop is a terminal dashboard for AI provider quotas, reset timers, balances, and local token throughput.">
     <meta name="author" content="Rafael Zimmermann">
     <meta property="og:type" content="article">
+    <meta property="og:image" content="https://rafaelzimmermann.com/assets/images/aitop-dashboard.png">
+    <meta property="og:image:alt" content="aitop dashboard showing Codex, z.ai, DeepSeek, and OpenRouter panels with account email and key fragments redacted">
     <meta property="og:title" content="aitop: htop for AI Usage">
     <meta property="og:description" content="Quotas, reset countdowns, balances, and local inference state for every provider you use, in one terminal.">
     <meta property="og:url" content="https://rafaelzimmermann.com/posts/aitop.html">
@@ -60,6 +62,10 @@
             </header>
             <div class="article-content">
                 <p>Between Codex, Claude, Copilot, z.ai, OpenRouter, and DeepSeek, I had no single place to see what my quota was doing on any of them. Each provider has its own way of reporting usage, if it reports at all. So I wrote <a href="https://github.com/rafaelzimmermann/aitop">aitop</a>: <code>htop</code> for AI usage, one Rust binary.</p>
+<figure class="article-figure">
+    <img src="/assets/images/aitop-dashboard.png" alt="aitop dashboard showing Codex, z.ai, DeepSeek, and OpenRouter panels with account email and key fragments redacted" width="1918" height="820" decoding="async">
+    <figcaption>The overview: quota windows, reset countdowns, and usage pace per provider. Account email and key fragments redacted.</figcaption>
+</figure>
                 <p>It shows rolling quota windows, reset countdowns, spending budgets, usage pace, and balances for the providers above, alongside local engine state — Strata and Ollama, plus local session activity. A few details got care because they annoyed me first:</p>
                 <ul>
                     <li>Reset times include an absolute local clock (<code>resets in 2h30m @ 16:58</code>), so they can be compared with what provider CLIs print.</li>
