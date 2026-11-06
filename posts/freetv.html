@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Replacing my smart TV home screen, limiting network activity, and reflecting on what AI-assisted reverse engineering makes possible.">
+    <meta name="author" content="Rafael Zimmermann">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://rafaelzimmermann.com/assets/images/freetv-home.png">
+    <meta property="og:image:alt" content="freetv custom 10-foot launcher screenshot showing Quick launch, whitelisted apps, and HDMI source tiles">
+    <meta property="og:title" content="freetv: Reclaiming a Locked-Down Smart TV">
+    <meta property="og:description" content="Replacing my smart TV home screen, limiting network activity, and reflecting on what AI-assisted reverse engineering makes possible.">
+    <meta property="og:url" content="https://rafaelzimmermann.com/posts/freetv.html">
+    <link rel="canonical" href="https://rafaelzimmermann.com/posts/freetv.html">
+    <title>freetv: Reclaiming a Locked-Down Smart TV - Rafael Zimmermann</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg?v=20261002">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=20261002">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <!-- Navigation -->
+    <nav id="navbar" aria-label="Main navigation">
+        <div class="nav-header">
+            <a href="/index.html#header" class="nav-logo" aria-label="Rafael Zimmermann — home"><span class="monogram">rz.</span><span>Rafael Zimmermann</span></a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/index.html#about" class="nav-link">About</a></li>
+            <li><a href="/index.html#experience" class="nav-link">Experience</a></li>
+            <li><a href="/index.html#skills" class="nav-link">Skills</a></li>
+            <li><a href="/index.html#education" class="nav-link">Education</a></li>
+            <li><a href="/index.html#contact" class="nav-link">Contact</a></li>
+            <li><a href="/blog.html" class="nav-link active"><i class="fas fa-pen"></i> Blog</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="mailto:contact@rafaelzimmermann.com" class="nav-social" title="Email" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/engzimmermann" target="_blank" rel="noopener noreferrer" class="nav-social" title="LinkedIn" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/rafaelzimmermann/" target="_blank" rel="noopener noreferrer" class="nav-social" title="GitHub" aria-label="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content" id="main">
+        <article class="article-container">
+            <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
+            <header class="article-header">
+                <h1>freetv: Reclaiming a Locked-Down Smart TV</h1>
+                <div class="article-meta">
+                    <time class="post-date" datetime="2026-11-05">November 5, 2026</time>
+                    <span class="post-reading-time">3 min read</span>
+                </div>
+            </header>
+            <div class="article-content">
+                <p>Recent criticism of smart-TV makers got me thinking about how much control we have over screens we own. I wanted a simpler home screen, quick access to the apps and HDMI inputs we use, and less network activity from my TV. That became <strong>freetv</strong>, a personal project to change how my television behaves at home.</p>
+
+                <figure class="article-figure">
+                    <a href="/assets/images/freetv-home.png" aria-label="Open freetv custom launcher screenshot at full size">
+                        <img src="/assets/images/freetv-home.png" width="1920" height="1080" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:0.5rem;" alt="Screenshot of the freetv 10-foot web launcher showing a collapsible sidebar, Quick launch row with green focus ring, whitelisted apps row, and HDMI source banners">
+                    </a>
+                    <figcaption>My custom home screen stays the default after rebooting and opens when I press Home.</figcaption>
+                </figure>
+
+                <h2>What changed</h2>
+                <p>In roughly a day, I had the core result working: I had blocked network endpoints I identified as associated with telemetry, and my replacement home app was still the default after a cold reboot. It showed only the apps and inputs we use and opened when I pressed the remote's Home button.</p>
+                <p>The result is a TV that opens to a screen I control, with less of the network activity I wanted to limit. Getting there took reverse engineering, trial and error, and a lot of help from AI assistants. That last part left me with a concern beyond the TV itself.</p>
+
+                <h2>What worried me about the process</h2>
+                <p>This was a hobby project on hardware I own, but working with AI assistants raised a concern for me. During the project, I sometimes moved between AI tools when one could not help further. I had few difficulties beyond steering the AI at some points; the models did most of the work.</p>
+                <p>That experience left me wondering whether safeguards can account for how people combine tools over a longer task.</p>
+                <p>This project took roughly a day to reach a working result. I still had to steer the AI and check its suggestions, but the models did most of the technical work.</p>
+                <p>I value being able to understand and adapt devices I own. But this project left me with two questions: can AI safeguards account for what becomes possible across a chain of prompts and tools, and are the connected devices in our homes harder to protect than we assume? Many are powerful computers that we use as appliances, and their complexity can make weaknesses difficult for owners to see. The project began with wanting more control over one screen; it ended with a broader concern about the tools used to uncover weaknesses and the devices we rely on every day.</p>
+            </div>
+        </article>
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 Rafael Zimmermann. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="/js/script.js?v=20261002"></script>
+</body>
+</html>
